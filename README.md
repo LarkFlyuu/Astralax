@@ -1,11 +1,12 @@
 # Astralax
 
+```sh
+# Clone
 git clone https://github.com/LarkFlyuu/Astralax.git
 
 mkdir build && cd build
 
-​```sh
-# Configure
+# Configure Build
 cmake -G Ninja .. \
    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
    -DMLIR_DIR=/data/share/llvm-project/build/lib/cmake/mlir \
@@ -16,4 +17,5 @@ cmake -G Ninja .. \
 
 # Build
 cmake --build .
-​```
+
+```
