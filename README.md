@@ -4,7 +4,7 @@ git clone https://github.com/LarkFlyuu/Astralax.git
 
 mkdir build && cd build
 
-​```bash
+​```
 cmake -G Ninja .. \
    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
    -DMLIR_DIR=/data/share/llvm-project/build/lib/cmake/mlir \
