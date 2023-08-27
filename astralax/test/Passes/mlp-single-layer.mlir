@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -convert-linalg-to-tpp | FileCheck %s
+// RUN: astl-opt %s -convert-linalg-to-astl | FileCheck %s
 
 #map0 = affine_map<(d0, d1) -> (d1)>
 #map1 = affine_map<(d0, d1) -> (d0, d1)>
@@ -30,6 +30,6 @@ module @predict_function  {
 }
 
 // CHECK: main
-// CHECK: tpp.identity
-// CHECK-NEXT: tpp.gemm
-// CHECK-NEXT: tpp.relu
+// CHECK: astl.identity
+// CHECK-NEXT: astl.gemm
+// CHECK-NEXT: astl.relu

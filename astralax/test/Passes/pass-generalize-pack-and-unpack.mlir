@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -generalize-tensor-pack-unpack -split-input-file | FileCheck %s
+// RUN: astl-opt %s -generalize-tensor-pack-unpack -split-input-file | FileCheck %s
 
 func.func @pack_matmul_operand_b(%in: tensor<512x1024xf32>) -> tensor<32x16x32x32xf32> {
   %0 = tensor.empty() : tensor<32x16x32x32xf32>

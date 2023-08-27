@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -split-input-file -verify-diagnostics
+// RUN: astl-opt %s -split-input-file -verify-diagnostics
 
 func.func @perf_no_outs(%n: i64) {
   %size = arith.index_cast %n : i64 to index

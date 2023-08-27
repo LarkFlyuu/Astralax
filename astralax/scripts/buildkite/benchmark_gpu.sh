@@ -3,7 +3,7 @@
 # Script for Buildkite automation only.
 # Environment variables must have been declared already.
 #
-# Run GPU benchmarks after building TPP-MLIR.
+# Run GPU benchmarks after building ASTL-MLIR.
 # shellcheck disable=SC1091
 
 SCRIPT_DIR=$(realpath "$(dirname "$0")/..")
@@ -24,7 +24,7 @@ else
 fi
 
 # Build
-eval "GPU=${GPU_OPTION} ${SCRIPT_DIR}/buildkite/build_tpp.sh"
+eval "GPU=${GPU_OPTION} ${SCRIPT_DIR}/buildkite/build_astl.sh"
 
 # Benchmark
 benchmark () {

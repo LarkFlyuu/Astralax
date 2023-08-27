@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers="tile-sizes=32,32" -convert-linalg-to-tpp | FileCheck %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers="tile-sizes=32,32" -convert-linalg-to-astl | FileCheck %s
 
 #map0 = affine_map<(d0, d1) -> (d1)>
 #map1 = affine_map<(d0, d1) -> (d0, d1)>
@@ -29,6 +29,6 @@ func.func @main(%arg0: tensor<128x256xf32>, %arg1: tensor<256x512xf32>,
 
 // CHECK-LABEL: main
 // CHECK: scf.forall
-// CHECK: tpp.identity
-// CHECK-NEXT: tpp.gemm
-// CHECK-NEXT: tpp.relu
+// CHECK: astl.identity
+// CHECK-NEXT: astl.gemm
+// CHECK-NEXT: astl.relu

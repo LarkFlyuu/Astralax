@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -convert-xsmm-to-func -split-input-file | FileCheck %s
+// RUN: astl-opt %s -convert-xsmm-to-func -split-input-file | FileCheck %s
 
 // CHECK-LABEL: dispatch_unary
 func.func @dispatch_unary() -> i64 {

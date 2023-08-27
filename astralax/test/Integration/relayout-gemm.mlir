@@ -1,12 +1,12 @@
-// RUN: tpp-run %s -tpp-to-loops -print \
+// RUN: astl-run %s -astl-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -linalg-to-loops -print \
+// RUN: astl-run %s -linalg-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 

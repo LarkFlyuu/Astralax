@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -verify-diagnostics
+// RUN: astl-opt %s -verify-diagnostics
 
 transform.sequence failures(propagate) {
 ^bb0(%arg0: !pdl.operation):

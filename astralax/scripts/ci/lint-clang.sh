@@ -9,12 +9,12 @@
 REPOROOT=$(realpath "$(dirname "$0")/../..")
 PATTERN="./*.h ./*.cpp ./*.c"
 
-TPP_CLANGFORMATVER=${TPP_CLANGFORMATVER:-16}
-LINTER=$(command -v "clang-format-${TPP_CLANGFORMATVER}")
+ASTL_CLANGFORMATVER=${ASTL_CLANGFORMATVER:-16}
+LINTER=$(command -v "clang-format-${ASTL_CLANGFORMATVER}")
 if [ ! "${LINTER}" ]; then
   LINTER=$(command -v clang-format)
-  if ! ${LINTER} --version | grep -q "${TPP_CLANGFORMATVER}\.[0-9\.]\+"; then
-    echo "ERROR: clang-format v${TPP_CLANGFORMATVER} is missing!"
+  if ! ${LINTER} --version | grep -q "${ASTL_CLANGFORMATVER}\.[0-9\.]\+"; then
+    echo "ERROR: clang-format v${ASTL_CLANGFORMATVER} is missing!"
     exit 1
   fi
 fi

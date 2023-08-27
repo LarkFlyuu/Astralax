@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -convert-linalg-to-xsmm -split-input-file | FileCheck %s
+// RUN: astl-opt %s -convert-linalg-to-xsmm -split-input-file | FileCheck %s
 
 #map = affine_map<(i, k, kk, j) -> (i, k, kk)>
 #map1 = affine_map<(i, k, kk, j) -> (k, kk, j)>

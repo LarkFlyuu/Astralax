@@ -1,12 +1,12 @@
-// RUN: tpp-opt %s -transform-dialect-interpreter | FileCheck %s -check-prefix=IR
+// RUN: astl-opt %s -transform-dialect-interpreter | FileCheck %s -check-prefix=IR
 
-// RUN: tpp-opt %s -default-tpp-passes | \
-// RUN: tpp-run -print \
+// RUN: astl-opt %s -default-astl-passes | \
+// RUN: astl-run -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-opt %s -default-tpp-passes="tpp-to-loops" | \
-// RUN: tpp-run -print \
+// RUN: astl-opt %s -default-astl-passes="astl-to-loops" | \
+// RUN: astl-run -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 

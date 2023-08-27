@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -convert-perf-to-loops -split-input-file -canonicalize | FileCheck %s
+// RUN: astl-opt %s -convert-perf-to-loops -split-input-file -canonicalize | FileCheck %s
 // XFAIL:* 
 // See: #277
 

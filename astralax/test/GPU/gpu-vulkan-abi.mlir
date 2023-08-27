@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -gpu-vulkan-abi -split-input-file | \
+// RUN: astl-opt %s -gpu-vulkan-abi -split-input-file | \
 // RUN: FileCheck %s
 
 module attributes {gpu.container_module} {

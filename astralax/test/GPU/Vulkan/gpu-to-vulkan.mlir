@@ -1,5 +1,5 @@
 // RUN: ASAN_OPTIONS=protect_shadow_gap=0:replace_intrin=0:detect_leaks=0:${ASAN_OPTIONS} \
-// RUN: tpp-opt %s -gpu-to-vulkan -split-input-file | FileCheck %s
+// RUN: astl-opt %s -gpu-to-vulkan -split-input-file | FileCheck %s
 
 module attributes {
   gpu.container_module,

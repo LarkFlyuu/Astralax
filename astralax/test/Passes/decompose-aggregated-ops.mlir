@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -decompose-aggregated-ops | FileCheck %s
+// RUN: astl-opt %s -decompose-aggregated-ops | FileCheck %s
 
 // CHECK-LABEL: softmax
 func.func @softmax(%arg0: tensor<2x2x2x2xf32>, %arg1: tensor<2x2x2x2xf32>) -> tensor<2x2x2x2xf32> {

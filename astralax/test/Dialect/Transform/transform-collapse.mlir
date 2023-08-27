@@ -1,4 +1,4 @@
-// RUN: tpp-opt -transform-dialect-interpreter -split-input-file -verify-diagnostics %s | FileCheck %s
+// RUN: astl-opt -transform-dialect-interpreter -split-input-file -verify-diagnostics %s | FileCheck %s
 
 transform.sequence failures(propagate) {
   ^bb0(%arg1: !transform.any_op):

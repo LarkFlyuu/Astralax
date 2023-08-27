@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -mlir-disable-threading=true -pass-pipeline="builtin.module(func.func(test-structural-matchers))" -o /dev/null 2>&1 | FileCheck %s
+// RUN: astl-opt %s -mlir-disable-threading=true -pass-pipeline="builtin.module(func.func(test-structural-matchers))" -o /dev/null 2>&1 | FileCheck %s
 
 // CHECK-LABEL: test
 func.func @test() {
@@ -44,8 +44,8 @@ func.func @test_vnni_brgemm(%arg0: tensor<48x32x32xbf16>,
 #map4 = affine_map<(d0) -> (d0)>
 #map5 = affine_map<() -> ()>
 
-// CHECK-LABEL: test_tpp_add
-func.func @test_tpp_add(%arg0: memref<32x32xf32>, %arg1: memref<32x32xf32>,
+// CHECK-LABEL: test_astl_add
+func.func @test_astl_add(%arg0: memref<32x32xf32>, %arg1: memref<32x32xf32>,
                         %arg2: memref<32x32xf32>, %arg3: memref<1xf32>,
                         %arg4: memref<1xf32>, %arg5: memref<1xf32>,
                         %arg6: memref<f32>, %arg7: memref<f32>, 
@@ -55,7 +55,7 @@ func.func @test_tpp_add(%arg0: memref<32x32xf32>, %arg1: memref<32x32xf32>,
                         %arg11: memref<32x32x32xf32>,
                         %arg12: memref<4x4xf32>,
                         %arg13: memref<4x4xf32, strided<[4, 1], offset: ?>>) {
-  // CHECK-COUNT-4: match tpp.add
+  // CHECK-COUNT-4: match astl.add
   // CHECK-NOT: not a match
   linalg.generic {
     indexing_maps = [#map3, #map3, #map3],
@@ -76,7 +76,7 @@ func.func @test_tpp_add(%arg0: memref<32x32xf32>, %arg1: memref<32x32xf32>,
         linalg.yield %1 : f32
   }
   // Empty map is an identity. Note we don't match
-  // this in the linalg to tpp conversion.
+  // this in the linalg to astl conversion.
   linalg.generic {
     indexing_maps = [#map5, #map5, #map5],
     iterator_types = []}
@@ -105,14 +105,14 @@ func.func @test_tpp_add(%arg0: memref<32x32xf32>, %arg1: memref<32x32xf32>,
 #map9 = affine_map<(d0, d1) -> (d0)>
 #map10 = affine_map<(d0, d1) -> (d1, d0)>
 
-// CHECK-LABEL: tpp_add_must_not_match
-func.func @tpp_add_must_not_match(%arg0: memref<3x3xf32>, %arg1: memref<1x3xf32>,
+// CHECK-LABEL: astl_add_must_not_match
+func.func @astl_add_must_not_match(%arg0: memref<3x3xf32>, %arg1: memref<1x3xf32>,
                                   %arg2: memref<3x3xf32>,
                                   %arg3: memref<32x32x32xf32>,
                                   %arg4: memref<32x32x32xf32>,
                                   %arg5: memref<32x32x32xf32>,
                                   %arg6: memref<3xf32>) {
-  // CHECK-NOT: match tpp.add
+  // CHECK-NOT: match astl.add
   // CHECK-COUNT-5: not a match 
   linalg.generic {
     indexing_maps = [#map7, #map8, #map7],
@@ -227,9 +227,9 @@ func.func @test_interfaces(%arg0: memref<8x8xf32, strided<[8, 2], offset: 0>>,
 #map11 = affine_map<(d0, d1) -> (d0, d1)>
 #map12 = affine_map<(d0, d1) -> (d1)>
 
-// CHECK-LABEL: test_tpp_identity
-func.func @test_tpp_identity(%arg0: memref<3xf32>, %arg1: memref<5x3xf32>) {
-  // CHECK: match tpp.identity
+// CHECK-LABEL: test_astl_identity
+func.func @test_astl_identity(%arg0: memref<3xf32>, %arg1: memref<5x3xf32>) {
+  // CHECK: match astl.identity
   // CHECK-NOT: not a match
   linalg.generic {
     indexing_maps = [#map12, #map11],
@@ -239,7 +239,7 @@ func.func @test_tpp_identity(%arg0: memref<3xf32>, %arg1: memref<5x3xf32>) {
       ^bb0(%in: f32, %out: f32):
         linalg.yield %in : f32
   }
-  // CHECK: match tpp.identity
+  // CHECK: match astl.identity
   // CHECK-NOT: not a match
   linalg.generic {
     indexing_maps = [#map11],

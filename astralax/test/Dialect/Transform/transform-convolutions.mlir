@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -transform-dialect-interpreter -canonicalize -split-input-file | FileCheck %s
+// RUN: astl-opt %s -transform-dialect-interpreter -canonicalize -split-input-file | FileCheck %s
 
 // Map a linalg.conv_2d_nhwc_hwcf to a matmul operation.
 // Unit filter.

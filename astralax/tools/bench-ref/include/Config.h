@@ -73,7 +73,7 @@ struct BenchConfig {
 
   BenchConfig(int argc, char **argv) {
     BenchOptions options;
-    llvm::cl::ParseCommandLineOptions(argc, argv, "TPP-MLIR C++ Benchmark\n");
+    llvm::cl::ParseCommandLineOptions(argc, argv, "ASTL-MLIR C++ Benchmark\n");
 
     // Simple settings
     random = options.random;

@@ -1,30 +1,30 @@
 // MLP with Softmax version (only unpacked for now)
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --bias-acc --softmax | tpp-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=SOFTMAX
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --softmax | tpp-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=SOFTMAX
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --softmax | tpp-run -e entry -entry-point-result=void -print --tpp-to-loops | FileCheck %s --check-prefix=SOFTMAX
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --bias-acc --softmax | astl-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=SOFTMAX
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --softmax | astl-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=SOFTMAX
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --softmax | astl-run -e entry -entry-point-result=void -print --astl-to-loops | FileCheck %s --check-prefix=SOFTMAX
 
 // MLP without softmax (can't print packed version for now)
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --bias-acc | tpp-run -e entry -entry-point-result=void -print | FileCheck %s
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 | tpp-run -e entry -entry-point-result=void -print | FileCheck %s
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 | tpp-run -e entry -entry-point-result=void -print --tpp-to-loops | FileCheck %s
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --bias-acc | astl-run -e entry -entry-point-result=void -print | FileCheck %s
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 | astl-run -e entry -entry-point-result=void -print | FileCheck %s
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 | astl-run -e entry -entry-point-result=void -print --astl-to-loops | FileCheck %s
 
 // Matmul only (BF16 tests in BF16 directory)
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10 | tpp-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=MATMUL
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10 | astl-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=MATMUL
 
 // Constant values
-// RUN: mlir-gen --kernel=mlp --mini-batch=10 --layers=10,10 | tpp-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=CONSTANT
+// RUN: mlir-gen --kernel=mlp --mini-batch=10 --layers=10,10 | astl-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=CONSTANT
 
 // Kernel - matmul
-// RUN: mlir-gen --kernel=matmul --seed=123 --float-width=32 --mini-batch=10 --layers=10,10 | tpp-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=GEN-MATMUL
+// RUN: mlir-gen --kernel=matmul --seed=123 --float-width=32 --mini-batch=10 --layers=10,10 | astl-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=GEN-MATMUL
 
 // Kernel - fc
-// RUN: mlir-gen --kernel=fc --seed=123 --float-width=32 --mini-batch=10 --layers=10,10 | tpp-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=GEN-FC
+// RUN: mlir-gen --kernel=fc --seed=123 --float-width=32 --mini-batch=10 --layers=10,10 | astl-run -e entry -entry-point-result=void -print | FileCheck %s --check-prefix=GEN-FC
 
 // Packed versions (can't print for now, so just check that it runs) TODO: Implement softmax, print 4D tensors
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10 --tiles=2,2,2 | tpp-run -e entry -entry-point-result=void -n 10 | FileCheck %s --check-prefix=PERF
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --tiles=2,2,2 | tpp-run -e entry -entry-point-result=void -n 10 | FileCheck %s --check-prefix=PERF
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --tiles=2,2,2 --bias-acc | tpp-run -e entry -entry-point-result=void -n 10 | FileCheck %s --check-prefix=PERF
-// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --tiles=2,2,2 | tpp-run -e entry -entry-point-result=void -n 10 --tpp-to-loops | FileCheck %s --check-prefix=PERF
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10 --tiles=2,2,2 | astl-run -e entry -entry-point-result=void -n 10 | FileCheck %s --check-prefix=PERF
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --tiles=2,2,2 | astl-run -e entry -entry-point-result=void -n 10 | FileCheck %s --check-prefix=PERF
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --tiles=2,2,2 --bias-acc | astl-run -e entry -entry-point-result=void -n 10 | FileCheck %s --check-prefix=PERF
+// RUN: mlir-gen --kernel=mlp --seed=123 --mini-batch=10 --layers=10,10,10 --tiles=2,2,2 | astl-run -e entry -entry-point-result=void -n 10 --astl-to-loops | FileCheck %s --check-prefix=PERF
 
 // SOFTMAX: ( 0.08{{.*}}, 0.09{{.*}}, 0.06{{.*}}, 0.10{{.*}}, 0.19{{.*}}, 0.13{{.*}}, 0.06{{.*}}, 0.06{{.*}}, 0.14{{.*}}, 0.09{{.*}} )
 

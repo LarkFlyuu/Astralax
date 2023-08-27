@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -bufferize -convert-check-to-loops | FileCheck %s
+// RUN: astl-opt %s -bufferize -convert-check-to-loops | FileCheck %s
 
 func.func @entry() {
  %b = arith.constant dense<[

@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -default-tpp-passes -split-input-file | FileCheck %s
+// RUN: astl-opt %s -default-astl-passes -split-input-file | FileCheck %s
 
 // CHECK: func.func @add(
 // CHECK-SAME:  %[[ARG0:.+]]: memref<3x3xf32>,

@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -constant-fold-pack -canonicalize | FileCheck %s
+// RUN: astl-opt %s -constant-fold-pack -canonicalize | FileCheck %s
 
 // The trick here is that the "expected" and "input" constants are different
 // before packing, but after constant packing, they're the same and the

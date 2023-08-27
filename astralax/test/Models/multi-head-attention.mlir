@@ -1,8 +1,8 @@
-// RUN: tpp-run %s -linalg-to-loops \
+// RUN: astl-run %s -linalg-to-loops \
 // RUN:         -print -e multi_head_attention -entry-point-result=void | \
 // RUN: FileCheck %s -check-prefix=EXEC
 
-// RUN: tpp-run %s \
+// RUN: astl-run %s \
 // RUN:         -print -e multi_head_attention -entry-point-result=void | \
 // RUN: FileCheck %s -check-prefix=EXEC
 

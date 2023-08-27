@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -mlir-disable-threading=true -pass-pipeline="builtin.module(func.func(test-scf-for-rewrite))" | FileCheck %s
+// RUN: astl-opt %s -mlir-disable-threading=true -pass-pipeline="builtin.module(func.func(test-scf-for-rewrite))" | FileCheck %s
 
 // CHECK-LABEL: test
 func.func @test() {

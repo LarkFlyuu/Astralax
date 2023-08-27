@@ -3,42 +3,42 @@
 #
 # Setup runtime environment based on build_tools/llvm_version.txt
 
-if [ ! "${TPPROOT}" ] && [ -d /nfs_home/buildkite-slurm/builds/tpp ]; then
-  source /nfs_home/buildkite-slurm/builds/tpp/enable-tpp
+if [ ! "${ASTLROOT}" ] && [ -d /nfs_home/buildkite-slurm/builds/astl ]; then
+  source /nfs_home/buildkite-slurm/builds/astl/enable-astl
 fi
 
-if [ "${TPP_LLVM}" ]; then
+if [ "${ASTL_LLVM}" ]; then
   # basic utilities functions (git_root, llvm_version)
   source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/ci/common.sh"
 
-  # LLVM version used to build TPP-mlir
-  if [ ! "${TPP_LLVM_VERSION}" ] || [ ! -d "${TPP_LLVM}/${TPP_LLVM_VERSION}" ]; then
-    TPP_LLVM_VERSION=$(llvm_version)
-    if [ "${TPP_LLVM_VERSION}" ]; then
-      export TPP_LLVM_VERSION;
+  # LLVM version used to build ASTL-mlir
+  if [ ! "${ASTL_LLVM_VERSION}" ] || [ ! -d "${ASTL_LLVM}/${ASTL_LLVM_VERSION}" ]; then
+    ASTL_LLVM_VERSION=$(llvm_version)
+    if [ "${ASTL_LLVM_VERSION}" ]; then
+      export ASTL_LLVM_VERSION;
     fi
   fi
 
-  if [ "${TPP_LLVM_VERSION}" ]; then
+  if [ "${ASTL_LLVM_VERSION}" ]; then
     # setup environment
-    export TPP_LLVM_DIR=${TPP_LLVM}/${TPP_LLVM_VERSION}
+    export ASTL_LLVM_DIR=${ASTL_LLVM}/${ASTL_LLVM_VERSION}
 
     # avoid overriding LD_LIBRARY_PATH of initial environment (append)
-    if [[ "${LD_LIBRARY_PATH}" != *":${TPP_LLVM}"* ]]; then
-      export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${TPP_LLVM_DIR}/lib
+    if [[ "${LD_LIBRARY_PATH}" != *":${ASTL_LLVM}"* ]]; then
+      export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ASTL_LLVM_DIR}/lib
     else
-      echo "WARNING: LD_LIBRARY_PATH already refers to ${TPP_LLVM}!"
+      echo "WARNING: LD_LIBRARY_PATH already refers to ${ASTL_LLVM}!"
     fi
     # avoid overriding PATH of initial environment (append)
-    if [[ "${PATH}" != *":${TPP_LLVM}"* ]]; then
-      export PATH=${PATH}:${TPP_LLVM_DIR}/bin
+    if [[ "${PATH}" != *":${ASTL_LLVM}"* ]]; then
+      export PATH=${PATH}:${ASTL_LLVM_DIR}/bin
     else
-      echo "WARNING: PATH already refers to ${TPP_LLVM}!"
+      echo "WARNING: PATH already refers to ${ASTL_LLVM}!"
     fi
 
     # setup additional/legacy environment variables
-    export CUSTOM_LLVM_ROOT=${TPP_LLVM_DIR}
-    export LLVM_VERSION=${TPP_LLVM_VERSION}
+    export CUSTOM_LLVM_ROOT=${ASTL_LLVM_DIR}
+    export LLVM_VERSION=${ASTL_LLVM_VERSION}
 
     # pickup runtime environment that is to be built
     BUILD_DIR=$(git_root)/build
@@ -48,5 +48,5 @@ if [ "${TPP_LLVM}" ]; then
     echo "ERROR: Cannot determine LLVM-version!"
   fi
 else
-  echo "ERROR: Please source the TPP-environment first!"
+  echo "ERROR: Please source the ASTL-environment first!"
 fi

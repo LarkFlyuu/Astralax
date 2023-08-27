@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s | tpp-opt | FileCheck %s
+// RUN: astl-opt %s | astl-opt | FileCheck %s
 
 // CHECK-LABEL: @xsmm_dialect
 func.func @xsmm_dialect(%arg0: memref<2x2xf32>,

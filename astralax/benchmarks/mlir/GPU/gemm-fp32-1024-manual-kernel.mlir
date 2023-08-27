@@ -1,4 +1,4 @@
-// RUN: tpp-run %s -n 10 \
+// RUN: astl-run %s -n 10 \
 // RUN:  -e entry -entry-point-result=void
 
 // BENCH_TOTAL_FLOPS: 536870912

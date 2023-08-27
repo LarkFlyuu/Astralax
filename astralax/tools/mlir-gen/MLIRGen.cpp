@@ -194,7 +194,7 @@ std::string MLIRGenerator::createMetadata() {
   std::string data = "";
 
   auto addRunnerString = [&]() {
-    data += "// RUN: tpp-run %s -n 10 \\\n";
+    data += "// RUN: astl-run %s -n 10 \\\n";
     data += "// RUN:  -e entry -entry-point-result=void\n";
     data += "\n";
   };
@@ -493,7 +493,7 @@ TensorType MLIRGenerator::getShape(ArrayRef<int64_t> dims, PackingType type) {
       // N x C -> BN x BC x bn x bc
       return RankedTensorType::get({x / n, y / c, n, c}, dataType);
     case PACK_WEIGHT:
-      // VNNI packing can be done via tpp-opt --vnni-pack
+      // VNNI packing can be done via astl-opt --vnni-pack
       assert(x % k == 0 && "Invalid tile size for K dim");
       assert(y % c == 0 && "Invalid tile size for C dim");
 

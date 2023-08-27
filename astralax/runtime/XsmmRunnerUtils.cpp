@@ -438,7 +438,7 @@ xsmm_fused_brgemm_dispatch(const libxsmm_datatype data_type, int64_t m,
 extern "C" int iree_xsmm_brgemm_dispatch(void *params, void *context,
                                          void *reserved) {
   // The ordering of fields in the structure below is closely tied to code
-  // in ConvertXsmmToFunc pass in TPP-MLIR. Any change to that pass would
+  // in ConvertXsmmToFunc pass in ASTL-MLIR. Any change to that pass would
   // also need change in below structure.
   typedef struct {
     int64_t address;
@@ -463,7 +463,7 @@ extern "C" int iree_xsmm_brgemm_dispatch(void *params, void *context,
 extern "C" int iree_xsmm_gemm_dispatch(void *params, void *context,
                                        void *reserved) {
   // The ordering of fields in the structure below is closely tied to code
-  // in ConvertXsmmToFunc pass in TPP-MLIR. Any change to that pass would
+  // in ConvertXsmmToFunc pass in ASTL-MLIR. Any change to that pass would
   // also need change in below structure.
   typedef struct {
     int64_t gemm_addr;
@@ -485,7 +485,7 @@ extern "C" int iree_xsmm_gemm_dispatch(void *params, void *context,
 extern "C" int iree_xsmm_unary_dispatch(void *params, void *context,
                                         void *reserved) {
   // The ordering of fields in the structure below is closely tied to code
-  // in ConvertXsmmToFunc pass in TPP-MLIR. Any change to that pass would
+  // in ConvertXsmmToFunc pass in ASTL-MLIR. Any change to that pass would
   // also need change in below structure.
   typedef struct {
     int64_t address;
@@ -507,7 +507,7 @@ extern "C" int iree_xsmm_unary_dispatch(void *params, void *context,
 extern "C" int iree_xsmm_binary_dispatch(void *params, void *context,
                                          void *reserved) {
   // The ordering of fields in the structure below is closely tied to code
-  // in ConvertXsmmToFunc pass in TPP-MLIR. Any change to that pass would
+  // in ConvertXsmmToFunc pass in ASTL-MLIR. Any change to that pass would
   // also need change in below structure.
   typedef struct {
     int64_t address;
@@ -532,7 +532,7 @@ extern "C" int iree_xsmm_binary_dispatch(void *params, void *context,
 extern "C" int iree_xsmm_brgemm_invoke(void *params, void *context,
                                        void *reserved) {
   // The ordering of fields in the structure below is closely tied to code
-  // in ConvertXsmmToFunc pass in TPP-MLIR. Any change to that pass would
+  // in ConvertXsmmToFunc pass in ASTL-MLIR. Any change to that pass would
   // also need change in below structure.
   typedef struct {
     int64_t dtype;
@@ -555,7 +555,7 @@ extern "C" int iree_xsmm_brgemm_invoke(void *params, void *context,
 extern "C" int iree_xsmm_gemm_invoke(void *params, void *context,
                                      void *reserved) {
   // The ordering of fields in the structure below is closely tied to code
-  // in ConvertXsmmToFunc pass in TPP-MLIR. Any change to that pass would
+  // in ConvertXsmmToFunc pass in ASTL-MLIR. Any change to that pass would
   // also need change in below structure.
   typedef struct {
     int64_t dtype;
@@ -575,7 +575,7 @@ extern "C" int iree_xsmm_gemm_invoke(void *params, void *context,
 extern "C" int iree_xsmm_unary_invoke(void *params, void *context,
                                       void *reserved) {
   // The ordering of fields in the structure below is closely tied to code
-  // in ConvertXsmmToFunc pass in TPP-MLIR. Any change to that pass would
+  // in ConvertXsmmToFunc pass in ASTL-MLIR. Any change to that pass would
   // also need change in below structure.
   typedef struct {
     int64_t dtype;
@@ -594,7 +594,7 @@ extern "C" int iree_xsmm_unary_invoke(void *params, void *context,
 extern "C" int iree_xsmm_binary_invoke(void *params, void *context,
                                        void *reserved) {
   // The ordering of fields in the structure below is closely tied to code
-  // in ConvertXsmmToFunc pass in TPP-MLIR. Any change to that pass would
+  // in ConvertXsmmToFunc pass in ASTL-MLIR. Any change to that pass would
   // also need change in below structure.
   typedef struct {
     int64_t dtype;

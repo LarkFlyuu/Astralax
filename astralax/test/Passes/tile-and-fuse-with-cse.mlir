@@ -1,4 +1,4 @@
-// RUN: tpp-opt -tpp-mapping %s | FileCheck %s
+// RUN: astl-opt -astl-mapping %s | FileCheck %s
 
 #map = affine_map<(d0, d1, d2, d3, d4, d5) -> (d0, d2, d3, d5)>
 #map1 = affine_map<(d0, d1, d2, d3, d4, d5) -> (d1, d2, d5, d4)>

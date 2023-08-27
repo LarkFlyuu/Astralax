@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -default-tpp-passes -split-input-file | FileCheck %s
+// RUN: astl-opt %s -default-astl-passes -split-input-file | FileCheck %s
 
 // CHECK: func.func @matmul_tensor(
 // CHECK-SAME:  %[[ARG0:.+]]: memref<128x1024xbf16>,
@@ -23,7 +23,7 @@ func.func @matmul_tensor(%arg0: tensor<128x1024xbf16>,
   // CHECK-NEXT: %[[llvm_ptr2:.*]] = llvm.inttoptr %[[ptr_cast2]] : i64 to !llvm.ptr<bf16>
   
   // CHECK: call @xsmm_gemm_invoke({{.*}}%[[llvm_ptr0]], %[[of]], %[[llvm_ptr1]], %[[of]], %[[llvm_ptr2]], %[[of]]
-  %result = tpp.gemm (%arg0: tensor<128x1024xbf16>, %arg1: tensor<512x2048x2xbf16>, %arg2: tensor<128x2048xbf16>) -> tensor<128x2048xbf16>
+  %result = astl.gemm (%arg0: tensor<128x1024xbf16>, %arg1: tensor<512x2048x2xbf16>, %arg2: tensor<128x2048xbf16>) -> tensor<128x2048xbf16>
   return %result : tensor<128x2048xbf16>
 }
 
@@ -51,7 +51,7 @@ func.func @matmul_memref(%arg0: memref<128x1024xbf16>,
   // CHECK-NEXT: %[[llvm_ptr2:.*]] = llvm.inttoptr %[[ptr_cast2]] : i64 to !llvm.ptr<bf16>
   
   // CHECK: call @xsmm_gemm_invoke({{.*}}%[[llvm_ptr0]], %[[of]], %[[llvm_ptr1]], %[[of]], %[[llvm_ptr2]], %[[of]]
-  tpp.gemm ins(%arg0: memref<128x1024xbf16>, %arg1: memref<512x2048x2xbf16>, %arg2: memref<128x2048xbf16>) 
+  astl.gemm ins(%arg0: memref<128x1024xbf16>, %arg1: memref<512x2048x2xbf16>, %arg2: memref<128x2048xbf16>) 
            outs(%arg2: memref<128x2048xbf16>)
   return %arg2 : memref<128x2048xbf16>
 }
@@ -81,7 +81,7 @@ func.func @brgemm_static_tensor(%arg0: tensor<4x256x512xbf16>, %arg1: tensor<4x5
   // CHECK-NEXT: %[[llvm_ptr2:.*]] = llvm.inttoptr %[[ptr_cast2]] : i64 to !llvm.ptr<bf16>
 
   // CHECK: call @xsmm_brgemm_invoke({{.*}}%[[llvm_ptr0]], %[[of]], %[[llvm_ptr1]], %[[of]], %[[llvm_ptr2]], %[[of]]
-  %2 = tpp.brgemm (%arg0 : tensor<4x256x512xbf16>, %1 : tensor<4x256x1024x2xbf16>, %arg2 : tensor<256x1024xbf16>) -> tensor<256x1024xbf16>
+  %2 = astl.brgemm (%arg0 : tensor<4x256x512xbf16>, %1 : tensor<4x256x1024x2xbf16>, %arg2 : tensor<256x1024xbf16>) -> tensor<256x1024xbf16>
   return %2 : tensor<256x1024xbf16>
 }
 
@@ -107,7 +107,7 @@ func.func @brgemm_static_memref(%arg0: memref<4x256x512xbf16>, %arg1: memref<4x2
   // CHECK-NEXT: %[[llvm_ptr2:.*]] = llvm.inttoptr %[[ptr_cast2]] : i64 to !llvm.ptr<bf16>
 
   // CHECK: call @xsmm_brgemm_invoke({{.*}}%[[llvm_ptr0]], %[[of]], %[[llvm_ptr1]], %[[of]], %[[llvm_ptr2]], %[[of]]
-  tpp.brgemm ins(%arg0 : memref<4x256x512xbf16>, %arg1 : memref<4x256x1024x2xbf16>, %arg2 : memref<256x1024xbf16>) 
+  astl.brgemm ins(%arg0 : memref<4x256x512xbf16>, %arg1 : memref<4x256x1024x2xbf16>, %arg2 : memref<256x1024xbf16>) 
              outs(%arg2 : memref<256x1024xbf16>)
   return %arg2 : memref<256x1024xbf16>
 }

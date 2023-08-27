@@ -1,12 +1,12 @@
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -tpp-to-loops -print \
+// RUN: astl-run %s -astl-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -linalg-to-loops -print \
+// RUN: astl-run %s -linalg-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
@@ -18,7 +18,7 @@
 #map4 = affine_map<(d0, d1) -> (0, 0)>
 
 
-func.func @copytppbrcast(%A: tensor<1x6xf32>) -> tensor<9x6xf32>  {
+func.func @copyastlbrcast(%A: tensor<1x6xf32>) -> tensor<9x6xf32>  {
   %B = tensor.empty() : tensor<9x6xf32>
   %O = linalg.generic { indexing_maps = [#map1, #map0],
                           iterator_types = ["parallel", "parallel"] }
@@ -29,7 +29,7 @@ func.func @copytppbrcast(%A: tensor<1x6xf32>) -> tensor<9x6xf32>  {
   return %O: tensor<9x6xf32>
 }
 
-func.func @copytppbrcastother(%A: tensor<6x1xf32>) -> tensor<6x9xf32>  {
+func.func @copyastlbrcastother(%A: tensor<6x1xf32>) -> tensor<6x9xf32>  {
   %B = tensor.empty() : tensor<6x9xf32>
   %O = linalg.generic { indexing_maps = [#map2, #map0],
                           iterator_types = ["parallel", "parallel"] }
@@ -71,7 +71,7 @@ func.func @entry() {
       [ 1.1, 2.1, 3.1, 4.1, 5.1, 6.1 ]
   ]> : tensor<1x6xf32>
 
-  %1 = call @copytppbrcast(%bcastrow) : (tensor<1x6xf32>) -> tensor<9x6xf32>
+  %1 = call @copyastlbrcast(%bcastrow) : (tensor<1x6xf32>) -> tensor<9x6xf32>
 
   //
   // CHECK:     ( ( 1.1, 2.1, 3.1, 4.1, 5.1, 6.1 ),
@@ -98,7 +98,7 @@ func.func @entry() {
       [ 6.1 ]
   ]> : tensor<6x1xf32>
 
-  %2 = call @copytppbrcastother(%bcastcol) : (tensor<6x1xf32>) -> tensor<6x9xf32>
+  %2 = call @copyastlbrcastother(%bcastcol) : (tensor<6x1xf32>) -> tensor<6x9xf32>
 
   //
   // CHECK:     ( ( 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1 ),

@@ -1,4 +1,4 @@
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
@@ -6,7 +6,7 @@
 #map1 = affine_map<(d0, d1, d2) -> (d2, d1)>
 #map2 = affine_map<(d0, d1, d2) -> (d0, d1)>
 
-func.func @gemm_tpp(%A: memref<2x2xf32>,
+func.func @gemm_astl(%A: memref<2x2xf32>,
           %B: memref<2x2xf32>, %C: memref<2x2xf32>)  {
   linalg.generic {indexing_maps = [#map0, #map1, #map2],
                          iterator_types = ["parallel", "parallel", "reduction"]}
@@ -39,7 +39,7 @@ func.func @entry(%out : memref<2x2xf32>) {
   %B = memref.get_global @__constant_db : memref<2x2xf32>
 
   // Call kernel.
-  call @gemm_tpp(%A, %B, %out) : (memref<2x2xf32>, memref<2x2xf32>, memref<2x2xf32>) -> ()
+  call @gemm_astl(%A, %B, %out) : (memref<2x2xf32>, memref<2x2xf32>, memref<2x2xf32>) -> ()
 
   return
 }

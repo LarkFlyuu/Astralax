@@ -12,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef TPP_EXECUTIONENGINE_CRUNNERUTILS_H
-#define TPP_EXECUTIONENGINE_CRUNNERUTILS_H
+#ifndef ASTL_EXECUTIONENGINE_CRUNNERUTILS_H
+#define ASTL_EXECUTIONENGINE_CRUNNERUTILS_H
 
 #include "libxsmm.h"
 #include "mlir/ExecutionEngine/Float16bits.h"
@@ -97,4 +97,4 @@ iree_xsmm_unary_invoke(void *params, void *context, void *reserved);
 extern "C" MLIR_RUNNERUTILS_EXPORT int
 iree_xsmm_binary_invoke(void *params, void *context, void *reserved);
 
-#endif // TPP_EXECUTIONENGINE_CRUNNERUTILS_H
+#endif // ASTL_EXECUTIONENGINE_CRUNNERUTILS_H

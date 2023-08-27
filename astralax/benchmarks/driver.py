@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    TPP-MLIR Benchmark Driver
+    Astralax Benchmark Driver
 
     Compares a known good MLIR kernel with a known good reference implementation
     in XSMM-DNN.
@@ -67,7 +67,7 @@ sys.path.append("harness")
 
 from Logger import Logger
 from Execute import Execute
-from TPPHelper import TPPHelper
+from ASTLHeader import ASTLHeader
 
 
 class ExtensionFlags(object):
@@ -103,13 +103,13 @@ class ExtensionFlags(object):
 class Environment(object):
     def __init__(self, args, loglevel):
         self.logger = Logger("driver.env", loglevel)
-        helper = TPPHelper(loglevel)
+        helper = ASTLHeader(loglevel)
         self.base_dir = os.path.realpath(os.path.dirname(__file__))
         self.root_dir = helper.findGitRoot(self.base_dir)
         self.build_dir = args.build
         if not self.build_dir:
             self.build_dir = self.root_dir
-        programs = helper.findTPPProgs(self.build_dir)
+        programs = helper.findASTLProgs(self.build_dir)
         for _, path in programs.items():
             if os.path.exists(path):
                 self.bin_dir = os.path.realpath(os.path.dirname(path))
@@ -481,7 +481,7 @@ class BenchmarkDriver(object):
         return True
 
     def run(self):
-        """Run tpp-opt and tpp-run to get the timings"""
+        """Run astl-opt and astl-run to get the timings"""
 
         # Actually run the file in benchmark mode, no output
         self.logger.info("Running the kernels with the arguments provided")
@@ -517,7 +517,7 @@ class BenchmarkDriver(object):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="TPP-MLIR Benchmark Harness")
+    parser = argparse.ArgumentParser(description="Astralax Benchmark Harness")
 
     # Required argument: baseDir name (directory)
     parser.add_argument(

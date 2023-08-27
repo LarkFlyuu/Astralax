@@ -1,4 +1,4 @@
-// RUN: tpp-opt -transform-dialect-interpreter -canonicalize -split-input-file %s | FileCheck %s
+// RUN: astl-opt -transform-dialect-interpreter -canonicalize -split-input-file %s | FileCheck %s
 
 transform.sequence failures(propagate) {
   ^bb0(%arg1: !transform.any_op):
@@ -100,7 +100,7 @@ transform.sequence failures(propagate) {
     // Propagate the packing down through the relu
     transform.structured.packing_propagation %2 : !transform.any_op
 
-    // Simply map linalg.generic to tpp.relu
+    // Simply map linalg.generic to astl.relu
     %3 = transform.structured.match ops{["linalg.generic"]} in %arg1 
       : (!transform.any_op) -> !transform.any_op
     %4 = transform.structured.get_blocked_matmuls %3 

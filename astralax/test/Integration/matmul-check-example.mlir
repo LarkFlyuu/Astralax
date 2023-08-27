@@ -1,11 +1,11 @@
-// RUN: tpp-run %s \
+// RUN: astl-run %s \
 // RUN:  -e entry -entry-point-result=void
 
 #map0 = affine_map<(d0, d1, d2) -> (d0, d2)>
 #map1 = affine_map<(d0, d1, d2) -> (d2, d1)>
 #map2 = affine_map<(d0, d1, d2) -> (d0, d1)>
 
-func.func @matmultpp(%A: tensor<4x8xf32>,
+func.func @matmulastl(%A: tensor<4x8xf32>,
           %B: tensor<8x4xf32>, %C: tensor<4x4xf32>) -> tensor<4x4xf32>  {
   %D = linalg.generic {indexing_maps = [#map0, #map1, #map2],
                          iterator_types = ["parallel", "parallel", "reduction"]}
@@ -41,7 +41,7 @@ func.func @entry() {
   ]> : tensor<8x4xf32>
   // Call kernel.
   %C = arith.constant dense<0.0> : tensor<4x4xf32>
-  %0 = call @matmultpp(%da, %db, %C)
+  %0 = call @matmulastl(%da, %db, %C)
        : (tensor<4x8xf32>, tensor<8x4xf32>, tensor<4x4xf32>) -> tensor<4x4xf32>
   %result = arith.constant dense<[
         [ 388.76, 425.56, 462.36, 499.16 ],

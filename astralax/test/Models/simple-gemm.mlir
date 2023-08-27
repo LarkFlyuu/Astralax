@@ -1,5 +1,5 @@
-// RUN: tpp-opt %s \
-// RUN: -convert-linalg-to-tpp -bufferize | FileCheck %s
+// RUN: astl-opt %s \
+// RUN: -convert-linalg-to-astl -bufferize | FileCheck %s
 
 func.func @entry(%A: tensor<4x8xf32>,
           %B: tensor<8x4xf32>, %C: tensor<4x4xf32>) -> tensor<4x4xf32> {
@@ -11,6 +11,6 @@ func.func @entry(%A: tensor<4x8xf32>,
 // CHECK-SAME:  %[[ARG0:.+]]: memref<4x8xf32>,
 // CHECK-SAME:  %[[ARG1:.+]]: memref<8x4xf32>,
 // CHECK-SAME:  %[[ARG2:.+]]: memref<4x4xf32>)
-// CHECK: tpp.gemm ins(%[[ARG0]] : memref<4x8xf32>, %[[ARG1]] : memref<8x4xf32>, %[[ARG2]] : memref<4x4xf32>) 
+// CHECK: astl.gemm ins(%[[ARG0]] : memref<4x8xf32>, %[[ARG1]] : memref<8x4xf32>, %[[ARG2]] : memref<4x4xf32>) 
 // CHECK-SAME:     outs(%[[ARG2]] : memref<4x4xf32>)
 // CHECK: return

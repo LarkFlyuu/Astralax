@@ -1,4 +1,4 @@
-// RUN: tpp-run %s \
+// RUN: astl-run %s \
 // RUN:  -e entry -entry-point-result=void -print | \
 // RUN: FileCheck %s
 

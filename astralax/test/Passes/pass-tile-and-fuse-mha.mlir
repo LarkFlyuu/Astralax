@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers | FileCheck %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers | FileCheck %s
 
 #map = affine_map<(d0, d1, d2, d5, d3, d4) -> (d0, d1, d2, d5)>
 #map1 = affine_map<(d0, d1, d2, d5, d3, d4) -> (d2, d5, d3, d4)>

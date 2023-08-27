@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -default-tpp-passes
+// RUN: astl-opt %s -default-astl-passes
 //
 
 // Imagenet (ILSVRC-2012-CLS) classification with ResNet50 v1.

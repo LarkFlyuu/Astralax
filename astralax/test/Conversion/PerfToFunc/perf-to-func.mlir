@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -convert-perf-to-loops -convert-perf-to-func -split-input-file -canonicalize | FileCheck %s
+// RUN: astl-opt %s -convert-perf-to-loops -convert-perf-to-func -split-input-file -canonicalize | FileCheck %s
 
 // CHECK-DAG: func.func private @perf_start_timer() -> {{.*}} 
 // CHECK-LABEL: @func_start_timer

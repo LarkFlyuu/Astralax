@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -gpu-conversion -split-input-file | FileCheck %s
+// RUN: astl-opt %s -gpu-conversion -split-input-file | FileCheck %s
 
 func.func @matmul() {
   %0 = memref.alloc() : memref<8x8xf32>

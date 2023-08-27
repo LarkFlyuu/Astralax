@@ -26,9 +26,9 @@ class FileCheckParser(object):
         # FileCheck line style
         self.runRE = re.compile(r"^\/\/\s*RUN: (.*)$")
         self.flopsRE = re.compile(r"^\/\/\s*BENCH_TOTAL_FLOPS: ([\d\.\-e]+)")
-        # Arguments in the RUN lines for tpp-opt
-        self.optArgs = re.compile(r"tpp-opt (%\w+)\s+(.*?)\s*\|")
-        # Arguments in the RUN lines for tpp-run
+        # Arguments in the RUN lines for astl-opt
+        self.optArgs = re.compile(r"astl-opt (%\w+)\s+(.*?)\s*\|")
+        # Arguments in the RUN lines for astl-run
         self.entryRE = re.compile(r"-e\s+(\w+)\s")
         self.itersRE = re.compile(r"-n\s+(\d+)\s")
         self.libsRE = re.compile(r"-shared-libs=([^\s]+)")

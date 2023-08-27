@@ -1,15 +1,15 @@
 // This should really be in the passes directory, not here
-// RUN: tpp-opt %s -rewrite-conv-to-matmul-or-brgemm | FileCheck %s -check-prefix=IR 
+// RUN: astl-opt %s -rewrite-conv-to-matmul-or-brgemm | FileCheck %s -check-prefix=IR 
 
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -tpp-to-loops -print \
+// RUN: astl-run %s -astl-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -linalg-to-loops -print \
+// RUN: astl-run %s -linalg-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 

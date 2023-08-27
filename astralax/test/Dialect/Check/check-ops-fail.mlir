@@ -1,5 +1,5 @@
 // DEFINE: %{option} = entry
-// DEFINE: %{command} = tpp-run %s -e %{option} -entry-point-result=void
+// DEFINE: %{command} = astl-run %s -e %{option} -entry-point-result=void
 
 // RUN: %{command} 
 

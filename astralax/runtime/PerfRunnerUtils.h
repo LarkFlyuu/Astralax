@@ -10,8 +10,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef TPP_EXECUTIONENGINE_PERFRUNNERUTILS_H
-#define TPP_EXECUTIONENGINE_PERFRUNNERUTILS_H
+#ifndef ASTL_EXECUTIONENGINE_PERFRUNNERUTILS_H
+#define ASTL_EXECUTIONENGINE_PERFRUNNERUTILS_H
 
 #include "mlir/ExecutionEngine/RunnerUtils.h"
 
@@ -23,4 +23,4 @@ extern "C" MLIR_RUNNERUTILS_EXPORT int64_t perf_start_timer();
 
 extern "C" MLIR_RUNNERUTILS_EXPORT double perf_stop_timer(int64_t);
 
-#endif // TPP_EXECUTIONENGINE_PERFRUNNERUTILS_H
+#endif // ASTL_EXECUTIONENGINE_PERFRUNNERUTILS_H

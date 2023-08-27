@@ -1,5 +1,5 @@
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers -cse | FileCheck %s
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers -cse -bufferize | FileCheck -check-prefix=ALLOC %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers -cse | FileCheck %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers -cse -bufferize | FileCheck -check-prefix=ALLOC %s
 // ALLOC-NOT: memref.alloc
 
 #map = affine_map<(d0, d1, d2, d3, d4, d5, d6) -> (d0, d2, d4, d6)>
@@ -59,7 +59,7 @@ func.func @dps_test(%arg0: tensor<8x48x32x32xbf16>,
 // CHECK: %[[SLICE_INIT:.+]] = tensor.extract_slice 
 // CHECK-SAME:  %[[ARG6]][%[[I]], %[[J]], 0, 0] [1, 1, 32, 32] [1, 1, 1, 1] 
 // CHECK-SAME:  : tensor<8x48x32x32xbf16> to tensor<32x32xbf16>
-// CHECK: %[[MUL:.+]] = tpp.brgemm
+// CHECK: %[[MUL:.+]] = astl.brgemm
 // CHECK-SAME: (%[[SLICE_ARG0]] : tensor<48x32x32xbf16>, %[[SLICE_ARG1]] : tensor<48x16x32x2xbf16>,
 // CHECK-SAME: %[[SLICE_INIT]] : tensor<32x32xbf16>)
 // CHECK: %[[SLICE_EXPAND:.+]] = tensor.extract_slice 

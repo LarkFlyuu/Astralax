@@ -1,7 +1,7 @@
-// RUN: tpp-opt %s -set-spirv-abi-attr=client-api=vulkan | \
+// RUN: astl-opt %s -set-spirv-abi-attr=client-api=vulkan | \
 // RUN: FileCheck %s --check-prefix=VULKAN
 
-// RUN: tpp-opt %s -set-spirv-abi-attr=client-api=opencl | \
+// RUN: astl-opt %s -set-spirv-abi-attr=client-api=opencl | \
 // RUN: FileCheck %s --check-prefix=OPENCL
 
 module attributes {gpu.container_module} {

@@ -107,7 +107,7 @@ while getopts "s:b:i:m:t:c:g:l:n:G:RS" arg; do
       SAN_OPTIONS="-DUSE_SANITIZER=\"Address;Memory;Leak;Undefined\""
       ;;
     G)
-      ENABLE_GPU="-DTPP_GPU=${OPTARG}"
+      ENABLE_GPU="-DASTL_GPU=${OPTARG}"
       ;;
     n)
       PROCS=$(nproc)
@@ -149,10 +149,10 @@ pip install --upgrade --user lit
 check_program lit
 pip install --upgrade --user -r ${SRC_DIR}/benchmarks/harness/requirements.txt
 
-TPP_LIT=$(which lit)
+ASTL_LIT=$(which lit)
 # patch incorrect interpreter
-if [ "${TPP_LIT}" ] && [ "$(command -v sed)" ]; then
-  sed -i 's/#!\/usr\/bin\/python3/#!\/usr\/bin\/env python3/' ${TPP_LIT}
+if [ "${ASTL_LIT}" ] && [ "$(command -v sed)" ]; then
+  sed -i 's/#!\/usr\/bin\/python3/#!\/usr\/bin\/env python3/' ${ASTL_LIT}
 fi
 
 # Consider to remove BLD_DIR shortly before running CMake
@@ -179,7 +179,7 @@ echo_run cmake -Wno-dev -G Ninja \
     -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} \
     -DCMAKE_INSTALL_PREFIX=${INST_DIR} \
     -DMLIR_DIR=${MLIR_DIR} \
-    -DLLVM_EXTERNAL_LIT=${TPP_LIT} \
+    -DLLVM_EXTERNAL_LIT=${ASTL_LIT} \
     ${BUILD_OPTIONS} \
     ${GCC_TOOLCHAIN_OPTIONS} \
     ${LINKER_OPTIONS} \

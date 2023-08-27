@@ -1,5 +1,5 @@
-// RUN: tpp-opt %s \
-// RUN: -convert-linalg-to-tpp -bufferize | FileCheck %s
+// RUN: astl-opt %s \
+// RUN: -convert-linalg-to-astl -bufferize | FileCheck %s
 
 #map = affine_map<(d0, d1, d2, d3, d4, d5) -> (d0, d2, d3, d5)>
 #map1 = affine_map<(d0, d1, d2, d3, d4, d5) -> (d1, d2, d5, d4)>
@@ -63,19 +63,19 @@ func.func @mlp_3layers(%arg0: tensor<256x1024xf32>) -> tensor<256x1024xf32> {
 
 // CHECK: func.func @mlp_3layers(
 // CHECK-SAME:  %[[ARG0:.+]]: memref<256x1024xf32>)
-// CHECK: tpp.zero ins({{.+}}) outs(%[[zeroBuf:.+]] : memref<256x1024xf32>)
+// CHECK: astl.zero ins({{.+}}) outs(%[[zeroBuf:.+]] : memref<256x1024xf32>)
 // layer 1
 // CHECK: memref.copy %[[zeroBuf]], %[[out1:.+]] : memref<256x1024xf32> to memref<256x1024xf32>
-// CHECK: tpp.gemm ins(%[[ARG0]]{{.+}}) outs(%[[out1:.+]] : memref<256x1024xf32>)
-// CHECK: tpp.add ins(%[[out1]]{{.+}}) outs(%[[out1]] : memref<256x1024xf32>)
-// CHECK: tpp.relu ins(%[[out1]] : memref<256x1024xf32>) outs(%[[out1]] : memref<256x1024xf32>)
+// CHECK: astl.gemm ins(%[[ARG0]]{{.+}}) outs(%[[out1:.+]] : memref<256x1024xf32>)
+// CHECK: astl.add ins(%[[out1]]{{.+}}) outs(%[[out1]] : memref<256x1024xf32>)
+// CHECK: astl.relu ins(%[[out1]] : memref<256x1024xf32>) outs(%[[out1]] : memref<256x1024xf32>)
 // layer 2
 // CHECK: memref.copy %[[zeroBuf]], %[[out2:.+]] : memref<256x1024xf32> to memref<256x1024xf32>
-// CHECK: tpp.gemm ins(%[[out1]]{{.+}}) outs(%[[out2:.+]] : memref<256x1024xf32>)
-// CHECK: tpp.add ins(%[[out2]]{{.+}}) outs(%[[out2]] : memref<256x1024xf32>)
-// CHECK: tpp.relu ins(%[[out2]] : memref<256x1024xf32>) outs(%[[out2]] : memref<256x1024xf32>)
+// CHECK: astl.gemm ins(%[[out1]]{{.+}}) outs(%[[out2:.+]] : memref<256x1024xf32>)
+// CHECK: astl.add ins(%[[out2]]{{.+}}) outs(%[[out2]] : memref<256x1024xf32>)
+// CHECK: astl.relu ins(%[[out2]] : memref<256x1024xf32>) outs(%[[out2]] : memref<256x1024xf32>)
 // layer 3
-// CHECK: tpp.gemm ins(%[[out2]]{{.+}}) outs(%[[zeroBuf:.+]] : memref<256x1024xf32>)
-// CHECK: tpp.add ins(%[[zeroBuf]]{{.+}}) outs(%[[zeroBuf]] : memref<256x1024xf32>)
-// CHECK: tpp.relu ins(%[[zeroBuf]] : memref<256x1024xf32>) outs(%[[zeroBuf]] : memref<256x1024xf32>)
+// CHECK: astl.gemm ins(%[[out2]]{{.+}}) outs(%[[zeroBuf:.+]] : memref<256x1024xf32>)
+// CHECK: astl.add ins(%[[zeroBuf]]{{.+}}) outs(%[[zeroBuf]] : memref<256x1024xf32>)
+// CHECK: astl.relu ins(%[[zeroBuf]] : memref<256x1024xf32>) outs(%[[zeroBuf]] : memref<256x1024xf32>)
 // CHECK: return %[[zeroBuf]]

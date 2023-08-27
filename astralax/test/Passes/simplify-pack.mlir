@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -simplify-pack -split-input-file | FileCheck %s
+// RUN: astl-opt %s -simplify-pack -split-input-file | FileCheck %s
 
 // CHECK-LABEL: empty_static
 func.func @empty_static() -> tensor<64x16x32x32xf32> {

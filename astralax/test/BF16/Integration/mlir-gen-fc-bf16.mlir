@@ -2,7 +2,7 @@
 // RUN: mlir-gen --kernel=fc --seed=0 --float-width=16 --mini-batch=128 --layers=2304,768 --tiles=64,48,64 --vnni=2 2>&1 | FileCheck %s --check-prefix=DP2
 // RUN: mlir-gen --kernel=fc --seed=0 --float-width=16 --mini-batch=128 --layers=2304,768 --tiles=64,48,64 --vnni=4 2>&1 | FileCheck %s --check-prefix=DP4
 
-// BF16: // RUN{{.*}}tpp-run %s -n {{\d*}}
+// BF16: // RUN{{.*}}astl-run %s -n {{\d*}}
 // BF16: // RUN{{.*}}-e entry -entry-point-result=void
 // BF16: // BENCH_TOTAL_FLOPS: 453181440
 // BF16-DAG: #map = affine_map<(d0, d1, d2, d3, d4, d5) -> (d0, d2, d3, d5)>
@@ -20,7 +20,7 @@
 // BF16:         arith.maxf
 // BF16-NOT: dealloc
 
-// DP2: // RUN{{.*}}tpp-run %s -n {{\d*}}
+// DP2: // RUN{{.*}}astl-run %s -n {{\d*}}
 // DP2: // RUN{{.*}}-e entry -entry-point-result=void
 // DP2: // BENCH_TOTAL_FLOPS: 453181440
 // DP2-DAG: #map = affine_map<(d0, d1, d2, d3, d4, d5, d6) -> (d0, d2, d4, d6)>
@@ -38,7 +38,7 @@
 // DP2:         arith.maxf
 // DP2-NOT: dealloc
 
-// DP4: // RUN{{.*}}tpp-run %s -n {{\d*}}
+// DP4: // RUN{{.*}}astl-run %s -n {{\d*}}
 // DP4: // RUN{{.*}}-e entry -entry-point-result=void
 // DP4: // BENCH_TOTAL_FLOPS: 453181440
 // DP4-DAG: #map = affine_map<(d0, d1, d2, d3, d4, d5, d6) -> (d0, d2, d4, d6)>

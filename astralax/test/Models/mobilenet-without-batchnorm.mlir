@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -default-tpp-passes
+// RUN: astl-opt %s -default-astl-passes
 
 // ----------------------
 // MobileNet Architecture

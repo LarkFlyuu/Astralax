@@ -1,10 +1,10 @@
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-func.func @matmultpp(%A: memref<4x8xbf16>,
+func.func @matmulastl(%A: memref<4x8xbf16>,
           %B: memref<4x4x2xbf16>, %C: memref<4x4xbf16>)  {
-  tpp.gemm ins(%A: memref<4x8xbf16>, %B: memref<4x4x2xbf16>, %C: memref<4x4xbf16>)
+  astl.gemm ins(%A: memref<4x8xbf16>, %B: memref<4x4x2xbf16>, %C: memref<4x4xbf16>)
            outs(%C: memref<4x4xbf16>)
   return
 }
@@ -20,7 +20,7 @@ func.func @entry() {
   %D = memref.alloc() : memref<4x4xbf16>
   %zero = arith.constant 0.0 : bf16
   linalg.fill ins(%zero : bf16) outs(%D:memref<4x4xbf16>)
-  call @matmultpp(%da, %0, %D)
+  call @matmulastl(%da, %0, %D)
        : (memref<4x8xbf16>, memref<4x4x2xbf16>, memref<4x4xbf16>)->()
 
   //

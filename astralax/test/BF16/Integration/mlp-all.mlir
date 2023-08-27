@@ -1,4 +1,4 @@
-// RUN: tpp-run %s \
+// RUN: astl-run %s \
 // RUN:  -e entry -entry-point-result=void
 // 
 // Total flops = sum(broadcast O(n*m) + matmul O(2*n*m*k) + ReLU (O(n*m))
@@ -22,8 +22,8 @@ func.func @mlp(%arg0: tensor<128x256xbf16>, %arg1: tensor<256x512xbf16>,
   ^bb0(%arg9: bf16, %arg10: bf16):
     linalg.yield %arg9 : bf16
   } -> tensor<128x512xbf16>
-  // TPP: scf.parallel
-  // TPP: tpp.brgemm
+  // ASTL: scf.parallel
+  // ASTL: astl.brgemm
   %2 = linalg.matmul ins(%arg0, %arg1: tensor<128x256xbf16>, tensor<256x512xbf16>) outs(%1: tensor<128x512xbf16>) -> tensor<128x512xbf16> 
   %3 = linalg.generic {indexing_maps = [#map1], iterator_types = ["parallel", "parallel"]} outs(%2 : tensor<128x512xbf16>) {
   ^bb0(%arg9: bf16):
@@ -34,8 +34,8 @@ func.func @mlp(%arg0: tensor<128x256xbf16>, %arg1: tensor<256x512xbf16>,
   ^bb0(%arg9: bf16, %arg10: bf16):
     linalg.yield %arg9 : bf16
   } -> tensor<128x1024xbf16>
- // TPP: scf.parallel
- // TPP: tpp.brgemm 
+ // ASTL: scf.parallel
+ // ASTL: astl.brgemm 
   %6 = linalg.matmul  ins(%3, %arg3 : tensor<128x512xbf16>, tensor<512x1024xbf16>) outs(%5 : tensor<128x1024xbf16>) -> tensor<128x1024xbf16>
   %7 = linalg.generic {indexing_maps = [#map1], iterator_types = ["parallel", "parallel"]} outs(%6 : tensor<128x1024xbf16>)  {
   ^bb0(%arg9: bf16):
@@ -47,8 +47,8 @@ func.func @mlp(%arg0: tensor<128x256xbf16>, %arg1: tensor<256x512xbf16>,
   ^bb0(%arg9: bf16, %arg10: bf16):
     linalg.yield %arg9 : bf16
   } -> tensor<128x2048xbf16>
-  // TPP: scf.parallel
-  // TPP: tpp.brgemm
+  // ASTL: scf.parallel
+  // ASTL: astl.brgemm
   %10 = linalg.matmul ins(%7, %arg5 : tensor<128x1024xbf16>, tensor<1024x2048xbf16>) outs(%9 : tensor<128x2048xbf16>) -> tensor<128x2048xbf16>
   %11 = linalg.generic {indexing_maps = [#map1], iterator_types = ["parallel", "parallel"]} outs(%10 : tensor<128x2048xbf16>) {
   ^bb0(%arg9: bf16):
@@ -60,8 +60,8 @@ func.func @mlp(%arg0: tensor<128x256xbf16>, %arg1: tensor<256x512xbf16>,
   ^bb0(%arg9: bf16, %arg10: bf16):
     linalg.yield %arg9 : bf16
   } -> tensor<128x1024xbf16>
-  // TPP: scf.parallel
-  // TPP: tpp.brgemm
+  // ASTL: scf.parallel
+  // ASTL: astl.brgemm
   %14 = linalg.matmul  ins(%11, %arg7 : tensor<128x2048xbf16>, tensor<2048x1024xbf16>) outs(%13 : tensor<128x1024xbf16>) -> tensor<128x1024xbf16>
   %15 = linalg.generic {indexing_maps = [#map1], iterator_types = ["parallel", "parallel"]} outs(%14 : tensor<128x1024xbf16>) {
   ^bb0(%arg9: bf16):

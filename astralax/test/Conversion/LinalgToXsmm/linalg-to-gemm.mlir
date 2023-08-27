@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -convert-linalg-to-xsmm | FileCheck %s
+// RUN: astl-opt %s -convert-linalg-to-xsmm | FileCheck %s
 
 func.func @simple_gemm(%arg0: memref<32x64xf32, strided<[64, 1], offset: ?>>,
                        %arg1: memref<64x32xf32, strided<[32, 1], offset: ?>>,

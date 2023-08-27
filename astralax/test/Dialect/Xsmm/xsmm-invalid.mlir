@@ -1,4 +1,4 @@
-// RUN: tpp-opt -split-input-file -verify-diagnostics %s
+// RUN: astl-opt -split-input-file -verify-diagnostics %s
 
 // CHECK-LABEL: func.func @gemm_dispatch
 func.func @gemm_dispatch() -> i64 {

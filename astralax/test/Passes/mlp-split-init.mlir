@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -convert-linalg-to-tpp -bufferize | FileCheck %s
+// RUN: astl-opt %s -convert-linalg-to-astl -bufferize | FileCheck %s
 
 #map0 = affine_map<(d0, d1) -> (d1)>
 #map1 = affine_map<(d0, d1) -> (d0, d1)>
@@ -36,6 +36,6 @@ module @predict_function  {
 // CHECK-SAME:  %[[ARG1:[a-zA-Z0-9]+]]: memref<256x512xf32>
 // CHECK-SAME:  %[[ARG2:[a-zA-Z0-9]+]]: memref<512xf32>
 // CHECK: %[[ARG3:[a-zA-Z0-9]+]] = memref.alloc() {alignment = 64 : i64} : memref<128x512xf32>
-// CHECK: tpp.identity ins(%[[ARG2]] : memref<512xf32>) outs(%[[ARG3]] : memref<128x512xf32>)
-// CHECK: tpp.gemm ins(%[[ARG0]] : memref<128x256xf32>, %[[ARG1]] : memref<256x512xf32>, %[[ARG3]] : memref<128x512xf32>) outs(%[[ARG3]] : memref<128x512xf32>)
-// CHECK: tpp.relu ins(%[[ARG3]] : memref<128x512xf32>) outs(%[[ARG3]] : memref<128x512xf32>)
+// CHECK: astl.identity ins(%[[ARG2]] : memref<512xf32>) outs(%[[ARG3]] : memref<128x512xf32>)
+// CHECK: astl.gemm ins(%[[ARG0]] : memref<128x256xf32>, %[[ARG1]] : memref<256x512xf32>, %[[ARG3]] : memref<128x512xf32>) outs(%[[ARG3]] : memref<128x512xf32>)
+// CHECK: astl.relu ins(%[[ARG3]] : memref<128x512xf32>) outs(%[[ARG3]] : memref<128x512xf32>)

@@ -1,15 +1,15 @@
 // This should really be in the passes directory, not here
-// RUN: tpp-opt %s -convert-linalg-to-tpp | FileCheck -check-prefix=TPP %s
+// RUN: astl-opt %s -convert-linalg-to-astl | FileCheck -check-prefix=ASTL %s
 
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -tpp-to-loops -print \
+// RUN: astl-run %s -astl-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -linalg-to-loops -print \
+// RUN: astl-run %s -linalg-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
@@ -17,7 +17,7 @@
 
 func.func @bigrelu(%B: tensor<32x16xf32>) -> tensor<32x16xf32>  {
   %c0 = arith.constant 0.0 : f32
-  // TPP: tpp.relu
+  // ASTL: astl.relu
   %O = linalg.generic { indexing_maps = [#map0],
                         iterator_types = ["parallel", "parallel"] }
     outs(%B: tensor<32x16xf32>) {

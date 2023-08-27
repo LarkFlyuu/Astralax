@@ -1,12 +1,12 @@
 // Make sure we map to linalg.matmul
-// RUN: tpp-opt %s -transform-dialect-interpreter -transform-drop-schedule | FileCheck -check-prefix=LINALG %s
+// RUN: astl-opt %s -transform-dialect-interpreter -transform-drop-schedule | FileCheck -check-prefix=LINALG %s
 
-// RUN: tpp-opt %s -transform-drop-schedule | \
-// RUN: tpp-run -print \
+// RUN: astl-opt %s -transform-drop-schedule | \
+// RUN: astl-run -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 

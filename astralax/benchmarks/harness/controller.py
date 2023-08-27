@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    TPP-MLIR Benchmark Controller
+    Astralax Benchmark Controller
 
     Runs an MLIR kernel multiple times and takes the statistics, comparing to
     a known-good result, checking if any difference is statistically significant.
@@ -16,7 +16,7 @@
     file (//).
 
     We can look at RUN lines, for details on how to process the file, like entry
-    point, tpp-opt args.
+    point, astl-opt args.
 
     We also support new ones:
      * BENCH_TOTAL_FLOPS: Number of FP ops in the kernel
@@ -35,7 +35,7 @@ import io
 from Logger import Logger
 from Execute import Execute
 from FileCheckParser import FileCheckParser
-from TPPHelper import TPPHelper
+from ASTLHeader import ASTLHeader
 
 
 class BenchmarkController(object):
@@ -44,7 +44,7 @@ class BenchmarkController(object):
     def __init__(self, args, loglevel):
         self.args = args
         self.logger = Logger("controller.bench.controller", loglevel)
-        self.helper = TPPHelper(loglevel)
+        self.helper = ASTLHeader(loglevel)
         self.loglevel = loglevel
         # If we're in a git repo, find the base dir, otherwise, this is the base dir
         self.baseDir = self.helper.findGitRoot(os.path.dirname(__file__))
@@ -52,7 +52,7 @@ class BenchmarkController(object):
         self.build_dir = args.build
         if not self.build_dir:
             self.build_dir = self.baseDir
-        self.programs = self.helper.findTPPProgs(self.build_dir)
+        self.programs = self.helper.findASTLProgs(self.build_dir)
         self.output = ""
         self.mean = 0.0
         self.stdev = 0.0
@@ -113,33 +113,33 @@ class BenchmarkController(object):
         return True
 
     def run(self):
-        """Run tpp-opt and tpp-run to get the timings"""
+        """Run astl-opt and astl-run to get the timings"""
 
         irContents = ""
         executor = Execute(self.loglevel)
 
-        # Only run tpp-opt if we have the arguments
+        # Only run astl-opt if we have the arguments
         if self.args.opt_args:
             self.logger.info("Running optimiser, to prepare the IR file")
-            optCmd = [self.programs["tpp-opt"]]
+            optCmd = [self.programs["astl-opt"]]
             optCmd.extend(shlex.split(self.args.opt_args))
 
-            # Run tpp-opt and capture the output IR
+            # Run astl-opt and capture the output IR
             optResult = executor.run(optCmd, input=self.benchmark)
             if 0 != optResult.returncode:
                 self.logger.error(
-                    f"Error executing tpp-opt: {optResult.stderr}"
+                    f"Error executing astl-opt: {optResult.stderr}"
                 )
                 return False
             irContents = optResult.stdout
         else:
-            # Bypass tpp-opt and just dump the file
+            # Bypass astl-opt and just dump the file
             irContents = self.benchmark
 
         # Actually run the file in benchmark mode, no output
         self.logger.info("Running the kernel with the arguments provided")
         runCmd = [
-            self.programs["tpp-run"],
+            self.programs["astl-run"],
             "-n",
             str(self.args.n),
             "-e",
@@ -159,7 +159,7 @@ class BenchmarkController(object):
             runCmd.extend(shlex.split(self.args.run_args))
         runResult = executor.run(runCmd, irContents)
         if 0 != runResult.returncode:
-            self.logger.error(f"Error executing tpp-run: {runResult.stderr}")
+            self.logger.error(f"Error executing astl-run: {runResult.stderr}")
             return False
         self.output = runResult.stdout
 
@@ -204,7 +204,7 @@ class BenchmarkController(object):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="TPP-MLIR Benchmark Harness")
+    parser = argparse.ArgumentParser(description="Astralax Benchmark Harness")
 
     # Required argument: benchmark name (can be a file, a directory, or stdin)
     parser.add_argument(
@@ -230,9 +230,9 @@ if __name__ == "__main__":
         "-entry", type=str, help="Name of the entry point (checks RUN line)"
     )
     parser.add_argument(
-        "-opt-args", type=str, help="tpp-opt arguments (checks RUN line)"
+        "-opt-args", type=str, help="astl-opt arguments (checks RUN line)"
     )
-    parser.add_argument("-run-args", type=str, help="tpp-run arguments")
+    parser.add_argument("-run-args", type=str, help="astl-run arguments")
     parser.add_argument(
         "-v",
         "--verbose",
@@ -248,7 +248,7 @@ if __name__ == "__main__":
         "--xsmm",
         action="count",
         default=1,
-        help="Turn on TPP optimizations (default)",
+        help="Turn on Astralax optimizations (default)",
     )
     parser.add_argument(
         "--disable-lsan", action="count", default=0, help="Disable LSAN"

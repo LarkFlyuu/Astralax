@@ -9,9 +9,9 @@
 SCRIPT_DIR=$(realpath $(dirname $0)/..)
 source ${SCRIPT_DIR}/ci/common.sh
 
-TPPROOT=$(realpath ${TPPROOT})
-if [ ! -f ${TPPROOT}/enable ]; then
-  echo "'${OPTARG}' not a TPPROOT directory"
+ASTLROOT=$(realpath ${ASTLROOT})
+if [ ! -f ${ASTLROOT}/enable ]; then
+  echo "'${OPTARG}' not a ASTLROOT directory"
   exit 1
 fi
 
@@ -26,7 +26,7 @@ LLVM_VERSION=$(llvm_version)
 
 # If not found, trigger a build
 if [ ! -d "${LLVMROOT}/${LLVM_VERSION}" ]; then
-  ${TPPROOT}/trigger.sh tpp-llvm ${LLVM_VERSION}
+  ${ASTLROOT}/trigger.sh astl-llvm ${LLVM_VERSION}
 else
   echo "Found $LLVM_VERSION"
 fi

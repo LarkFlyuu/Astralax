@@ -1,20 +1,20 @@
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-func.func @fused_brgemm_tpp(%A: tensor<1x4x8xf32>,
+func.func @fused_brgemm_astl(%A: tensor<1x4x8xf32>,
                             %B: tensor<1x8x4xf32>, 
                             %C: tensor<4x4xf32>, %E: tensor<1x4xf32>) -> tensor<4x4xf32>  {
-  %D = tpp.fused_brgemm [unary = none, binary = add] 
+  %D = astl.fused_brgemm [unary = none, binary = add] 
                         (%A: tensor<1x4x8xf32>, %B: tensor<1x8x4xf32>, 
                          %C: tensor<4x4xf32>, %E: tensor<1x4xf32>) -> tensor<4x4xf32>
   return %D: tensor<4x4xf32>
 }
 
-func.func @fused_brgemm_tpp_neg(%A: tensor<1x4x8xf32>,
+func.func @fused_brgemm_astl_neg(%A: tensor<1x4x8xf32>,
                                 %B: tensor<1x8x4xf32>, 
                                 %C: tensor<4x4xf32>, %E: tensor<1x4xf32>) -> tensor<4x4xf32>  {
-  %D = tpp.fused_brgemm [unary = relu, binary = add] 
+  %D = astl.fused_brgemm [unary = relu, binary = add] 
                         (%A: tensor<1x4x8xf32>, %B: tensor<1x8x4xf32>, 
                          %C: tensor<4x4xf32>, %E: tensor<1x4xf32>) -> tensor<4x4xf32>
   return %D: tensor<4x4xf32>
@@ -46,7 +46,7 @@ func.func @entry() {
   // Call kernel - test add.
   %C = arith.constant dense<0.0> : tensor<4x4xf32>
   %E = arith.constant dense<1.0> : tensor<1x4xf32> 
-  %0 = call @fused_brgemm_tpp(%da, %db, %C, %E)
+  %0 = call @fused_brgemm_astl(%da, %db, %C, %E)
       : (tensor<1x4x8xf32>, tensor<1x8x4xf32>, 
          tensor<4x4xf32>, tensor<1x4xf32>) -> tensor<4x4xf32>
 
@@ -68,7 +68,7 @@ func.func @entry() {
   ]]> : tensor<1x4x8xf32>
   
   // Call kernel - test relu.
-  %1 = call @fused_brgemm_tpp_neg(%da_neg, %db, %C, %E)
+  %1 = call @fused_brgemm_astl_neg(%da_neg, %db, %C, %E)
       : (tensor<1x4x8xf32>, tensor<1x8x4xf32>,
          tensor<4x4xf32>, tensor<1x4xf32>) -> tensor<4x4xf32>
  

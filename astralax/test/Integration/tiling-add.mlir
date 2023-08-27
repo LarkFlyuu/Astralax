@@ -1,15 +1,15 @@
 // This should really be in the passes directory, not here
-// RUN: tpp-opt %s -convert-linalg-to-tpp | FileCheck -check-prefix=TPP %s
+// RUN: astl-opt %s -convert-linalg-to-astl | FileCheck -check-prefix=ASTL %s
 
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -tpp-to-loops -print \
+// RUN: astl-run %s -astl-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -linalg-to-loops -print \
+// RUN: astl-run %s -linalg-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
@@ -17,7 +17,7 @@
 
 func.func @bigadd(%A: tensor<32x16xf32>,
                   %B: tensor<32x16xf32>) -> tensor<32x16xf32>  {
-  // TPP: tpp.add
+  // ASTL: astl.add
   %O = linalg.generic { indexing_maps = [#map0, #map0],
                         iterator_types = ["parallel", "parallel"] }
     ins(%A : tensor<32x16xf32>) outs(%B: tensor<32x16xf32>) {

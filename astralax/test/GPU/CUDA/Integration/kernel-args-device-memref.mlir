@@ -1,10 +1,10 @@
 // RUN: ASAN_OPTIONS=protect_shadow_gap=0:replace_intrin=0:detect_leaks=0:${ASAN_OPTIONS} \
-// RUN: tpp-run %s -gpu=cuda -print-mlir=mid -gpu-args=1 \
+// RUN: astl-run %s -gpu=cuda -print-mlir=mid -gpu-args=1 \
 // RUN:  -entry-point-result=void -e entry 2>&1 | \
 // RUN: FileCheck %s
 
 // RUN: ASAN_OPTIONS=protect_shadow_gap=0:replace_intrin=0:detect_leaks=0:${ASAN_OPTIONS} \
-// RUN: tpp-run %s -gpu=cuda -print-mlir=mid -gpu-args=1 -print \
+// RUN: astl-run %s -gpu=cuda -print-mlir=mid -gpu-args=1 -print \
 // RUN:  -entry-point-result=void -e entry 2>&1 | \
 // RUN: FileCheck %s --check-prefix=PRINT
 

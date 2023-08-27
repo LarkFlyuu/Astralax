@@ -1,4 +1,4 @@
-// RUN: tpp-run %s \
+// RUN: astl-run %s \
 // RUN:         -print -e resnet50_bottleneck_block -entry-point-result=void | \
 // RUN: FileCheck %s -check-prefix=EXEC
 

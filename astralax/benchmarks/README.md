@@ -1,11 +1,11 @@
-# TPP MLIR Benchmarks
+# Astralax Benchmarks
 
-This directory contains benchmarks comparing TPP-MLIR with LIBXSMM-DNN.
+This directory contains benchmarks comparing Astralax with LIBXSMM-DNN.
 This allows us to measure how much off are we when compared with ninja-written code.
 
 ## Run Types
 
-There are two types of runs: TPP-MLIR (suffix `_mlir`) and XSMM-DNN (suffic `_dnn`).
+There are two types of runs: Astralax (suffix `_mlir`) and XSMM-DNN (suffic `_dnn`).
 Each type can choose a number of options, environment variables and CPU flag support.
 
 Common options are:
@@ -42,7 +42,7 @@ This is for developers to test their transforms in the compiler.
 
 The MLIR benchmarks are also run as tests on a normal test run and are available under `benchmarks/mlir`.
 The harness (`benchmarks/harness/controller.py`) automatically detects tool paths, libraries and even LLVM LIT variables.
-It also reads the MLIR file and parsers the FileCheck RUN lines to know how to run both `tpp-opt` and `tpp-run`.
+It also reads the MLIR file and parsers the FileCheck RUN lines to know how to run both `astl-opt` and `astl-run`.
 
 To see the harness' command line, run the driver with `-vv` and it will dump all command lines for both MLIR and XSMM-DNN runs.
 For MLIR runs, through the harness, you can also use the `-vv` flag to see what's going on inside, and repeat the steps by hand, if needed.

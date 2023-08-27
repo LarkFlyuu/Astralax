@@ -1,4 +1,4 @@
-// RUN: tpp-opt -transform-dialect-interpreter -verify-diagnostics -split-input-file %s | FileCheck %s
+// RUN: astl-opt -transform-dialect-interpreter -verify-diagnostics -split-input-file %s | FileCheck %s
 
 #map = affine_map<(d0, d1, d2, d3) -> (d0, d1, d2, d3)>
 func.func @propagation(%arg0: tensor<12x2x56x56x32xf32>) -> tensor<12x56x56x64xf32> {

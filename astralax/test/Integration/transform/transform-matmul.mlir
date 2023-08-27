@@ -1,11 +1,11 @@
-// RUN: tpp-opt %s -transform-dialect-interpreter | FileCheck %s -check-prefix=IR
+// RUN: astl-opt %s -transform-dialect-interpreter | FileCheck %s -check-prefix=IR
 
-// RUN: tpp-opt %s -transform-drop-schedule | \
-// RUN: tpp-run -print \
+// RUN: astl-opt %s -transform-drop-schedule | \
+// RUN: astl-run -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 

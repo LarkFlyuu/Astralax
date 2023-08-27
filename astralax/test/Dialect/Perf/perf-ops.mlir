@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -split-input-file -canonicalize | FileCheck %s
+// RUN: astl-opt %s -split-input-file -canonicalize | FileCheck %s
 
 // CHECK-LABEL: @perf_timer
 func.func @perf_timer(%a: i32, %b: i32, %n: i64) -> i32 {

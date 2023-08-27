@@ -62,7 +62,7 @@ set(CONFIG_DIR "${BENCHMARK_DIR}/astralax/config")
 # Run a small set of benchmarks with small iterations to test the benchmarks and run locally on small machines
 # add_custom_target(quick-bench ${BENCHMARK_DIR}/driver.py -v --build ${PROJECT_BINARY_DIR} -n 10
 #                   -c ${CONFIG_DIR}/base/base.json
-#                   DEPENDS tpp-opt tpp-run xsmm_dnn_mlp
+#                   DEPENDS astl-opt astl-run xsmm_dnn_mlp
 #                   WORKING_DIRECTORY ${BENCHMARK_DIR}
 #                   COMMENT Run Quick Benchmarks)
 
@@ -108,7 +108,7 @@ set(CONFIG_DIR "${BENCHMARK_DIR}/astralax/config")
 # string(JOIN ',' PERF_CFGS_STR ${MATMUL_PERF_CFGS} ${FC_PERF_CFGS})
 # add_custom_target(quick-perf ${BENCHMARK_DIR}/driver.py -v --build ${PROJECT_BINARY_DIR} -n 10
 #   -c ${PERF_CFGS_STR}
-#                   DEPENDS tpp-opt tpp-run xsmm_dnn_mlp
+#                   DEPENDS astl-opt astl-run xsmm_dnn_mlp
 #                   WORKING_DIRECTORY ${BENCHMARK_DIR}
 #                   COMMENT Run Quick Performance Benchmarks)
 
@@ -123,7 +123,7 @@ set(CONFIG_DIR "${BENCHMARK_DIR}/astralax/config")
 # string(JOIN ',' BENCH_CFGS_STR ${BENCH_CFGS})
 # add_custom_target(benchmarks ${BENCHMARK_DIR}/driver.py -v --build ${PROJECT_BINARY_DIR}
 #   -c ${BENCH_CFGS_STR}
-#                   DEPENDS tpp-opt tpp-run xsmm_dnn_mlp
+#                   DEPENDS astl-opt astl-run xsmm_dnn_mlp
 #                   WORKING_DIRECTORY ${BENCHMARK_DIR}
 #                   COMMENT Run Benchmarks)
 
@@ -142,7 +142,7 @@ set(CONFIG_DIR "${BENCHMARK_DIR}/astralax/config")
 #   # Run a small set of benchmarks with small iterations to test the benchmarks and run locally on small machines
 #   add_custom_target(quick-gpu-bench ${BENCHMARK_DIR}/driver.py -v --build ${PROJECT_BINARY_DIR} -n 10
 #   -c ${BENCH_GPU_CFGS_STR}
-#   DEPENDS tpp-opt tpp-run ${BENCH_CUDA_DEPS}
+#   DEPENDS astl-opt astl-run ${BENCH_CUDA_DEPS}
 #   WORKING_DIRECTORY ${BENCHMARK_DIR}
 #   COMMENT Run Quick GPU Benchmarks)
 # endif()

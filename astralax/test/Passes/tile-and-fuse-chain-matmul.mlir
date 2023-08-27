@@ -1,7 +1,7 @@
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers="tile-sizes=2,2 use-for-all=false" | FileCheck -check-prefix=CONF1 %s
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers="tile-sizes=2,0 use-for-all=false" | FileCheck -check-prefix=CONF2 %s
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers="tile-sizes=0,2 use-for-all=false" | FileCheck -check-prefix=CONF3 %s
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers="tile-sizes=0,0 use-for-all=false" | FileCheck -check-prefix=CONF4 %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers="tile-sizes=2,2 use-for-all=false" | FileCheck -check-prefix=CONF1 %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers="tile-sizes=2,0 use-for-all=false" | FileCheck -check-prefix=CONF2 %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers="tile-sizes=0,2 use-for-all=false" | FileCheck -check-prefix=CONF3 %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers="tile-sizes=0,0 use-for-all=false" | FileCheck -check-prefix=CONF4 %s
 
 #map = affine_map<(d0, d1) -> (d0, d1)>
 

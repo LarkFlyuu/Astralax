@@ -1,4 +1,4 @@
-// RUN: tpp-opt -transform-dialect-interpreter -transform-drop-schedule %s | FileCheck %s
+// RUN: astl-opt -transform-dialect-interpreter -transform-drop-schedule %s | FileCheck %s
 
 #map = affine_map<(d0, d1) -> (d0, d1)>
 

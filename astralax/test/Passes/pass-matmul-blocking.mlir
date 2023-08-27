@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -pack-matmul="block-factors=32,32,32" -split-input-file | FileCheck %s
+// RUN: astl-opt %s -pack-matmul="block-factors=32,32,32" -split-input-file | FileCheck %s
 
 func.func @block_linalg_matmul(
   %arg0: tensor<128x128xf32>, %arg1: tensor<128x128xf32>, %arg2: tensor<128x128xf32>)

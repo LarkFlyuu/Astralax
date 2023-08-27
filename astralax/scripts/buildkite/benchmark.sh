@@ -3,7 +3,7 @@
 # Script for Buildkite automation only.
 # Environment variables must have been declared already.
 #
-# Run long benchmarks after building TPP-MLIR.
+# Run long benchmarks after building ASTL-MLIR.
 # shellcheck disable=SC1091
 
 SCRIPT_DIR=$(realpath "$(dirname "$0")/..")
@@ -17,7 +17,7 @@ LOGFILE=$(mktemp)
 trap 'rm ${LOGFILE}' EXIT
 
 # Build
-eval "${SCRIPT_DIR}/buildkite/build_tpp.sh"
+eval "${SCRIPT_DIR}/buildkite/build_astl.sh"
 
 # Benchmark
 benchmark () {
@@ -45,8 +45,8 @@ benchmark () {
 # OpenMP Benchmarks
 benchmark omp/dnn-fp32.json "OpenMP XSMM-DNN FP32"
 benchmark omp/dnn-bf16.json "OpenMP XSMM-DNN BF16"
-benchmark omp/mlir-fp32.json "OpenMP TPP-MLIR FP32"
-benchmark omp/mlir-bf16.json "OpenMP TPP-MLIR BF16"
+benchmark omp/mlir-fp32.json "OpenMP ASTL-MLIR FP32"
+benchmark omp/mlir-bf16.json "OpenMP ASTL-MLIR BF16"
 
 # Matmul Benchmarks
 benchmark matmul/256x1024x1024.json "Matmul 256x1024x1024"

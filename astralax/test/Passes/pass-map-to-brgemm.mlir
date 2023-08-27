@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -tile-consumer-and-fuse-producers -split-input-file | FileCheck %s
+// RUN: astl-opt %s -tile-consumer-and-fuse-producers -split-input-file | FileCheck %s
 
 #map0 = affine_map<(d0, d1, d2, d3, d4, d5) -> (d0, d2, d3, d5)>
 #map1 = affine_map<(d0, d1, d2, d3, d4, d5) -> (d1, d2, d5, d4)>
@@ -55,7 +55,7 @@ func.func @vnni_layout_brgemm(%arg0: tensor<48x32x32xbf16>,
         %12 = arith.addf %out, %11 : bf16
         linalg.yield %12 : bf16
   } -> tensor<32x32xbf16>
-  // CHECK: tpp.brgemm (%[[ARG0]] : tensor<48x32x32xbf16>, %[[ARG1]] : tensor<48x16x32x2xbf16>, 
+  // CHECK: astl.brgemm (%[[ARG0]] : tensor<48x32x32xbf16>, %[[ARG1]] : tensor<48x16x32x2xbf16>, 
   // CHECK-SAME:        %[[ARG2]] : tensor<32x32xbf16>) -> (tensor<32x32xbf16>)
   return %0 : tensor<32x32xbf16>
 }
@@ -80,7 +80,7 @@ func.func @vnni_layout_brgemm2(%arg0: tensor<32x48x32x32xbf16>,
         linalg.yield %12 : bf16
   } -> tensor<32x32x32xbf16>
   // CHECK: %{{.+}} = scf.for
-  // CHECK: %{{.+}} = tpp.brgemm (%{{.+}} : tensor<48x32x32xbf16>, %{{.+}} : tensor<48x16x32x2xbf16>, 
+  // CHECK: %{{.+}} = astl.brgemm (%{{.+}} : tensor<48x32x32xbf16>, %{{.+}} : tensor<48x16x32x2xbf16>, 
   // CHECK-SAME:                  %{{.+}} : tensor<32x32xbf16>) -> (tensor<32x32xbf16>)
   return %0 : tensor<32x32x32xbf16>
 }
@@ -105,7 +105,7 @@ func.func @vnni_layout_brgemm3(%arg0: tensor<32x32x48x32x32xbf16>,
         linalg.yield %12 : bf16
   } -> tensor<32x32x32x32xbf16>
   // CHECK: %{{.+}} = scf.forall
-  // CHECK: %{{.+}} = tpp.brgemm (%{{.+}} : tensor<48x32x32xbf16>, %{{.+}} : tensor<48x16x32x2xbf16>, 
+  // CHECK: %{{.+}} = astl.brgemm (%{{.+}} : tensor<48x32x32xbf16>, %{{.+}} : tensor<48x16x32x2xbf16>, 
   // CHECK-SAME:                  %{{.+}} : tensor<32x32xbf16>) -> (tensor<32x32xbf16>)
   return %0 : tensor<32x32x32x32xbf16>
 }
@@ -165,7 +165,7 @@ func.func @vnni_layout_brgemm_with_consumer(%arg0: tensor<48x32x32xbf16>,
         %12 = arith.addf %out, %11 : bf16
         linalg.yield %12 : bf16
   } -> tensor<32x32xbf16>
-  // CHECK: tpp.brgemm (%[[ARG0]] : tensor<48x32x32xbf16>, %[[ARG1]] : tensor<48x16x32x2xbf16>, 
+  // CHECK: astl.brgemm (%[[ARG0]] : tensor<48x32x32xbf16>, %[[ARG1]] : tensor<48x16x32x2xbf16>, 
   // CHECK-SAME:        %[[ARG2]] : tensor<32x32xbf16>) -> (tensor<32x32xbf16>)
   %1 = linalg.generic {
     indexing_maps = [#map3],

@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -default-tpp-passes="linalg-to-xsmm" | FileCheck %s
+// RUN: astl-opt %s -default-astl-passes="linalg-to-xsmm" | FileCheck %s
 
 func.func @fill_op(%arg0: memref<3x3xf32>) {
   %cst = arith.constant 0.0 : f32

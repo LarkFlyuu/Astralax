@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -conv-init-simplify -split-input-file -canonicalize -cse | FileCheck %s
+// RUN: astl-opt %s -conv-init-simplify -split-input-file -canonicalize -cse | FileCheck %s
 
 #map = affine_map<(d0, d1, d2, d3) -> (d3)>
 #map1 = affine_map<(d0, d1, d2, d3) -> (d0, d1, d2, d3)>

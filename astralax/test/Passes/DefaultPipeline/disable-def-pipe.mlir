@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -disable-def-pipe -default-tpp-passes | FileCheck %s
+// RUN: astl-opt %s -disable-def-pipe -default-astl-passes | FileCheck %s
 
 func.func @matmul(%A: tensor<4x8xf32>,
           %B: tensor<8x4xf32>, %C: tensor<4x4xf32>) -> tensor<4x4xf32> {

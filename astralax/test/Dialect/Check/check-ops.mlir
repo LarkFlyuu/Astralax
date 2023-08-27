@@ -1,4 +1,4 @@
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void
 
 func.func @entry() {

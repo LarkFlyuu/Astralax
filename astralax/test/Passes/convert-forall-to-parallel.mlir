@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -convert-forall-to-parallel -split-input-file | FileCheck %s
+// RUN: astl-opt %s -convert-forall-to-parallel -split-input-file | FileCheck %s
 
 // CHECK-LABEL: func.func @tensor_forall
 func.func @tensor_forall(%arg0: tensor<32x32xbf16>) -> tensor<8x112x32x32xbf16> {

@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -tpp-mapping | FileCheck %s
+// RUN: astl-opt %s -astl-mapping | FileCheck %s
 
 !A_tensor_t = tensor<256x512xbf16>
 !B_tensor_t = tensor<512x1024xbf16>
@@ -19,4 +19,4 @@ func.func @matmul_static(
 // CHECK-SAME:  : tensor<32x16x16x32x2xbf16> to tensor<16x16x32x2xbf16>
 // CHECK: %[[SLICE2:.+]] = tensor.extract_slice %{{.+}}[%[[ARG3]], %[[ARG4]], 0, 0] [1, 1, 32, 32] [1, 1, 1, 1] 
 // CHECK-SAME:  : tensor<8x32x32x32xbf16> to tensor<32x32xbf16>
-// CHECK: %{{.+}} = tpp.brgemm (%[[SLICE]] : tensor<16x32x32xbf16>, %[[SLICE1]] : tensor<16x16x32x2xbf16>, %[[SLICE2]] : tensor<32x32xbf16>)
+// CHECK: %{{.+}} = astl.brgemm (%[[SLICE]] : tensor<16x32x32xbf16>, %[[SLICE1]] : tensor<16x16x32x2xbf16>, %[[SLICE2]] : tensor<32x32xbf16>)

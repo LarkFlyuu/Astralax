@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    TPP Helper
+    Astralax Helper
 
     Detects paths, libraries, executables, LLVM variables, etc.
 """
@@ -12,11 +12,11 @@ import os
 from Logger import Logger
 
 
-class TPPHelper(object):
+class ASTLHeader(object):
     """Detects paths, libraries, executables, LLVM variables, etc."""
 
     def __init__(self, loglevel):
-        self.logger = Logger("tpp.helper", loglevel)
+        self.logger = Logger("astl.helper", loglevel)
 
     def findGitRoot(self, path):
         """Find the git root directory, if any, or return the input"""
@@ -28,10 +28,10 @@ class TPPHelper(object):
             temp = os.path.abspath(os.path.join(temp, os.pardir))
         return path
 
-    def findTPPProgs(self, baseDir):
-        """Find the necessary TPP programs to run the benchmarks"""
+    def findASTLProgs(self, baseDir):
+        """Find the necessary Astralax programs to run the benchmarks"""
 
-        programs = {"tpp-opt": "", "tpp-run": ""}
+        programs = {"astl-opt": "", "astl-run": ""}
         found = 0
         maxProgs = len(programs.keys())
         for root, dirs, files in os.walk(baseDir, followlinks=True):
@@ -44,7 +44,7 @@ class TPPHelper(object):
                 break
 
         if found < maxProgs:
-            self.logger.error("Cannot find all TPP programs")
+            self.logger.error("Cannot find all Astralax programs")
             self.logger.error(f"Found: {programs}")
             return {}
         return programs

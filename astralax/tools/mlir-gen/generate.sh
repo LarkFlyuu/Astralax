@@ -2,8 +2,8 @@
 #
 # This script emulates the libxsmm-dnn command line to call the MLIR generator
 # in the same way in hopes it will generate the same network. The IR is generated
-# by mlir-gen, which is then passed to tpp-run to optimize and run the benchmark.
-# See: https://github.com/plaidml/tpp-mlir/issues/341
+# by mlir-gen, which is then passed to astl-run to optimize and run the benchmark.
+# See: https://github.com/plaidml/astl-mlir/issues/341
 
 # Comment to disable debug messages
 debug () {
@@ -109,15 +109,15 @@ if [ ! -d $ROOT ]; then
   ROOT=$PWD
 fi
 MLIR_GEN=$(find $ROOT -type f -name mlir-gen | head -n1)
-TPP_OPT=$(find $ROOT -type f -name tpp-opt | head -n1)
-TPP_RUN=$(find $ROOT -type f -name tpp-run | head -n1)
-if [ -z "$MLIR_GEN" ] || [ -z "$TPP_OPT" ] || [ -z "$TPP_RUN" ]; then
+ASTL_OPT=$(find $ROOT -type f -name astl-opt | head -n1)
+ASTL_RUN=$(find $ROOT -type f -name astl-run | head -n1)
+if [ -z "$MLIR_GEN" ] || [ -z "$ASTL_OPT" ] || [ -z "$ASTL_RUN" ]; then
   echo "Could not find binaries"
   exit 1
 fi
 debug "Generator: $MLIR_GEN"
-debug "Optimizer: $TPP_OPT"
-debug "Runner: $TPP_RUN"
+debug "Optimizer: $ASTL_OPT"
+debug "Runner: $ASTL_RUN"
 
 # Pick a random seed (and print, for interoperability)
 SEED=$(date +%s)
@@ -133,14 +133,14 @@ run "$MLIR_GEN $MLIR_GEN_ARGS" $ORIG_MLIR
 
 # FIXME: --pack-matmul isn't quite working with the rest of the pipeline
 # Once it works, we can pass the TILE variables to it
-TPP_OPT_ARGS="--default-tpp-passes"
+ASTL_OPT_ARGS="--default-astl-passes"
 if [ "$FLOAT_SIZE" == "16" ]; then
-  TPP_OPT_ARGS="--pack-vnni $TPP_OPT_ARGS"
+  ASTL_OPT_ARGS="--pack-vnni $ASTL_OPT_ARGS"
 fi
 OPT_MLIR="mlir-gen-optimized.mlir"
 debug "\nOptimizing model:"
-run "$TPP_OPT $TPP_OPT_ARGS $ORIG_MLIR" $OPT_MLIR
+run "$ASTL_OPT $ASTL_OPT_ARGS $ORIG_MLIR" $OPT_MLIR
 
-TPP_RUN_ARGS="-e entry -entry-point-result=void --seed=$SEED --n $ITER"
+ASTL_RUN_ARGS="-e entry -entry-point-result=void --seed=$SEED --n $ITER"
 debug "\nBenchmarking model:"
-run "$TPP_RUN $TPP_RUN_ARGS $OPT_MLIR"
+run "$ASTL_RUN $ASTL_RUN_ARGS $OPT_MLIR"

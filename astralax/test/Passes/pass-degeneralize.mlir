@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -linalg-generalize-named-ops -linalg-degeneralize-generic-ops -split-input-file | FileCheck %s
+// RUN: astl-opt %s -linalg-generalize-named-ops -linalg-degeneralize-generic-ops -split-input-file | FileCheck %s
 
 func.func @degeneralize(%arg0: tensor<3x3xf32>, %arg1: tensor<3x3xf32>) -> tensor<3x3xf32> {
   %0 = tensor.empty() : tensor<3x3xf32>

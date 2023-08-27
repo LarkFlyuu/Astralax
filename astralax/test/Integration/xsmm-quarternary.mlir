@@ -1,4 +1,4 @@
-// RUN: tpp-run %s \
+// RUN: astl-run %s \
 // RUN:  -e entry -entry-point-result=void
 
 func.func @entry(%arg0: memref<64x4x4xf32>, %arg1: memref<64x2x4x2xf32>, %arg2: memref<4x4xf32>, %arg3: memref<4xf32>) {

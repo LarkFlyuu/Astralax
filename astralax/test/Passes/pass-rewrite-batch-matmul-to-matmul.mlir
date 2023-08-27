@@ -1,4 +1,4 @@
-// RUN: tpp-opt -rewrite-batch-matmul-to-matmul -split-input-file %s | FileCheck %s
+// RUN: astl-opt -rewrite-batch-matmul-to-matmul -split-input-file %s | FileCheck %s
 
 func.func @batch_matmul_rewrite(%arg0: tensor<512x32x64xf32>, %arg1: tensor<512x64x32xf32>) -> tensor<512x32x32xf32> {
   %0 = tensor.empty() : tensor<512x32x32xf32>

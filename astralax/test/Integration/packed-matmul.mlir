@@ -1,17 +1,17 @@
-// RUN: tpp-run %s -print \
+// RUN: astl-run %s -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -tpp-to-loops -print \
+// RUN: astl-run %s -astl-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-run %s -linalg-to-loops -print \
+// RUN: astl-run %s -linalg-to-loops -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 
-// RUN: tpp-opt %s -pack-matmul="block-factors=2,2,2" | \
-// RUN: tpp-run -print \
+// RUN: astl-opt %s -pack-matmul="block-factors=2,2,2" | \
+// RUN: astl-run -print \
 // RUN:  -e entry -entry-point-result=void | \
 // RUN: FileCheck %s
 

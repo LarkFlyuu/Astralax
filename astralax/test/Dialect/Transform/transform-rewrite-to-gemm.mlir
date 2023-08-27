@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -transform-dialect-interpreter -canonicalize | FileCheck %s
+// RUN: astl-opt %s -transform-dialect-interpreter -canonicalize | FileCheck %s
 
 #map = affine_map<(d0, d1, d2, d3, d4, d5, d6) -> (d0, d1 + d2, d4 + d3, d6)>
 #map1 = affine_map<(d0, d1, d2, d3, d4, d5, d6) -> (d2, d3, d6, d5)>

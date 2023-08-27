@@ -1,4 +1,4 @@
-// RUN: tpp-opt %s -split-input-file -tile-consumer-and-fuse-producers="tile-sizes=2,2" -cse | FileCheck %s
+// RUN: astl-opt %s -split-input-file -tile-consumer-and-fuse-producers="tile-sizes=2,2" -cse | FileCheck %s
 
 func.func @matmul_sequence_only_tiling_fusion(%arg0: tensor<32x64xf32>, %arg1: tensor<64x32xf32>,
     %arg2: tensor<32x32xf32>, %arg3: tensor<32x64xf32>, %arg4: tensor<32x64xf32>,
