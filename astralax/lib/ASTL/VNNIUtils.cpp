@@ -11,16 +11,12 @@
 #include "mlir/IR/TypeUtilities.h"
 #include "mlir/IR/Types.h"
 
-#include "libxsmm.h"
-
 namespace mlir {
 namespace vnni {
 namespace utils {
 
 std::optional<int64_t> getVnniBlockingFactor(Type type) {
   auto elementType = getElementTypeOrSelf(type);
-  if (elementType.isBF16())
-    return libxsmm_cpuid_dot_pack_factor(LIBXSMM_DATATYPE_BF16);
   return std::nullopt;
 }
 
