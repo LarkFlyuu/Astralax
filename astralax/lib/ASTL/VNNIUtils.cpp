@@ -16,7 +16,7 @@ namespace vnni {
 namespace utils {
 
 std::optional<int64_t> getVnniBlockingFactor(Type type) {
-  auto elementType = getElementTypeOrSelf(type);
+  // auto elementType = getElementTypeOrSelf(type);
   return std::nullopt;
 }
 

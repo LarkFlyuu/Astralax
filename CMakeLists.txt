@@ -43,4 +43,85 @@ add_definitions(${LLVM_DEFINITIONS})
 
 set(LLVM_LIT_ARGS "-sv" CACHE STRING "lit default options")
 
+function(add_astl_mlir_dialect dialect dialect_name)
+  set(LLVM_TARGET_DEFINITIONS ${dialect}.td)
+  mlir_tablegen(${dialect}Ops.hpp.inc -gen-op-decls "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Ops.cpp.inc -gen-op-defs "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Dialect.hpp.inc -gen-dialect-decls -dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Dialect.cpp.inc -gen-dialect-defs -dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Types.hpp.inc -gen-typedef-decls -typedefs-dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Types.cpp.inc -gen-typedef-defs -typedefs-dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Attributes.hpp.inc -gen-attrdef-decls -attrdefs-dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Attributes.cpp.inc -gen-attrdef-defs -attrdefs-dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
+  add_public_tablegen_target(OM${dialect}IncGen)
+endfunction()
+
+function(add_astl_mlir_interface interface)
+  set(LLVM_TARGET_DEFINITIONS ${interface}.td)
+  mlir_tablegen(${interface}.hpp.inc -gen-op-interface-decls)
+  mlir_tablegen(${interface}.cpp.inc -gen-op-interface-defs)
+  add_public_tablegen_target(OM${interface}IncGen)
+endfunction()
+
+function(add_astl_mlir_library name)
+  cmake_parse_arguments(ARG
+    "EXCLUDE_FROM_OM_LIBS;NO_INSTALL"
+    ""
+    "DEPENDS;INCLUDE_DIRS;ACCEL_INCLUDE_DIRS;LINK_LIBS;LINK_COMPONENTS"
+    ${ARGN}
+    )
+
+  if (NOT ARG_EXCLUDE_FROM_OM_LIBS)
+    set_property(GLOBAL APPEND PROPERTY ONNX_MLIR_LIBS ${name})
+  endif()
+
+  add_library(${name} ${ARG_UNPARSED_ARGUMENTS})
+  llvm_update_compile_flags(${name})
+
+  if (ARG_DEPENDS)
+    add_dependencies(${name} ${ARG_DEPENDS})
+  endif()
+
+  if (ARG_INCLUDE_DIRS)
+    target_include_directories(${name} ${ARG_INCLUDE_DIRS})
+  endif()
+
+  if (ARG_ACCEL_INCLUDE_DIRS)
+    target_include_directories(${name} ${ARG_ACCEL_INCLUDE_DIRS})
+  endif()
+
+  target_include_directories(${name}
+    PUBLIC
+    ${ONNX_MLIR_SRC_ROOT}
+    ${ONNX_MLIR_BIN_ROOT}
+    )
+
+  if (ARG_LINK_LIBS)
+    target_link_libraries(${name} ${ARG_LINK_LIBS})
+  endif()
+
+  if (ARG_LINK_COMPONENTS)
+    set(LinkageMode)
+    if (ARG_LINK_COMPONENTS MATCHES "^(PUBLIC|PRIVATE|INTERFACE)")
+      list(POP_FRONT ARG_LINK_COMPONENTS LinkageMode)
+    endif()
+
+    llvm_map_components_to_libnames(COMPONENT_LIBS ${ARG_LINK_COMPONENTS})
+
+    if (LinkageMode)
+      target_link_libraries(${name} ${LinkageMode} ${COMPONENT_LIBS})
+    else()
+      target_link_libraries(${name} PRIVATE ${COMPONENT_LIBS})
+    endif()
+  endif()
+
+  if (NOT ARG_NO_INSTALL)
+    install(TARGETS ${name}
+      ARCHIVE DESTINATION lib
+      LIBRARY DESTINATION lib
+      RUNTIME DESTINATION bin
+      )
+  endif()
+endfunction(add_astl_mlir_library)
+
 add_subdirectory(astralax)
