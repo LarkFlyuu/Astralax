@@ -1,5 +1,7 @@
-add_subdirectory(include)
-add_subdirectory(runtime)
-add_subdirectory(lib)
+include_directories(include)
 
-add_subdirectory(tools)
+add_subdirectory(include)
+
+# add_subdirectory(runtime)
+# add_subdirectory(lib)
+# add_subdirectory(tools)
