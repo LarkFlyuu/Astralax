@@ -13,6 +13,19 @@ class CommonTrait : public TraitBase<ConcreteType, CommonTrait> {
     if (loc == nullptr) return "unknown";
     return loc.getName().str();
   }
+
+  size_t getOpIndex() {
+    auto *concrete = static_cast<ConcreteType *>(this);
+    auto *parent = concrete->getParentOp();
+    if (parent == nullptr) return 0;
+    auto *region = concrete->getParentRegion();
+    if (region == nullptr) return 0;
+    auto &ops = region->getOps();
+    for (size_t i = 0; i < ops.size(); ++i) {
+      if (ops[i] == parent) return i;
+    }
+    return 0;
+  }
 };
 
 }  // namespace OpTrait

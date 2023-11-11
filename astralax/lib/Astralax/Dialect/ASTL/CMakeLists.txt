@@ -1,6 +1,4 @@
-file(GLOB _srcs
-     IR/*.cpp
-     *.cpp)
+file(GLOB _srcs *.cpp)
 
 add_mlir_library(ASTLDialect
     ${_srcs}

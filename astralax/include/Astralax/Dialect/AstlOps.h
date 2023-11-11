@@ -7,6 +7,8 @@
 #include "Astralax/Dialect/AstlEnums.h.inc"
 #include "Astralax/Dialect/AstlOpsDialect.h.inc"
 
+#include "Astralax/Traits/CommonTrait.h"
+
 #define GET_ATTRDEF_CLASSES
 #include "Astralax/Dialect/AstlAttr.h.inc"
 

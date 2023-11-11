@@ -1,2 +1,2 @@
-add_subdirectory(ASTL)
-add_subdirectory(Codegen)
+include_directories(${CMAKE_SOURCE_DIR}/astralax/include)
+add_subdirectory(Astralax)

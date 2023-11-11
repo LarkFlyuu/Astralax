@@ -13,7 +13,7 @@ project(astralax LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
 
-set(MLIR_DIR /data/llvm-project/build/lib/cmake/mlir)
+set(MLIR_DIR ${CMAKE_SOURCE_DIR}/third_party/llvm-project/build/lib/cmake/mlir)
 
 find_package(MLIR REQUIRED CONFIG)
 

@@ -15,4 +15,17 @@ def Ax_Status : I32EnumAttr<"Status",
   let cppNamespace = "::astl";
 }
 
+def Ax_Layout : I32EnumAttr<"Layout",
+  "layout of the tensor",[
+    I32EnumAttrCase<"NCHW", 0>,
+    I32EnumAttrCase<"NHWC", 1>,
+    I32EnumAttrCase<"Matrix", 2>,
+    I32EnumAttrCase<"Vector", 3>,
+    I32EnumAttrCase<"Scalar", 4>,
+    I32EnumAttrCase<"C128", 5>,
+  ]>{
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::astl";
+}
+
 #endif
