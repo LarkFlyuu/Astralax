@@ -1,5 +1,5 @@
 add_library(Operator SHARED Operator.cpp)
-target_link_libraries(Operator PUBLIC ASTLGPU MLIRParser)
+target_link_libraries(Operator PUBLIC ASTLDialect)
 
 function(add_astl_op_lib op_name)
   add_library(${op_name} SHARED ${op_name}.cpp)
@@ -22,4 +22,3 @@ set_target_properties(Operator PROPERTIES
 add_astl_op_lib("AddOp")
 add_astl_op_lib("SubOp")
 add_astl_op_lib("Conv3x3s1p1_i8xi10ti8")
-

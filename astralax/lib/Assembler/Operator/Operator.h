@@ -1,8 +1,6 @@
 #include "mlir/IR/Operation.h"
-#include "mlir/Parser/Parser.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
-#include "mlir/Dialect/SCF/IR/SCF.h"
-#include "mlir/Dialect/Linalg/IR/Linalg.h"
+#include "Astralax/Dialect/AstlOps.h"
 #include <iostream>
 #include <string>
 
