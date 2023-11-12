@@ -1,42 +1,27 @@
 #include "mlir/IR/Operation.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "Astralax/Dialect/AstlOps.h"
+#include "common.h"
+#include "Assembler/masm.h"
 #include <iostream>
 #include <string>
 
-#define MLIR_ASSERT(x, y)                                              \
-  {                                                                    \
-    const std::string &funcName = y;                                   \
-    if (!(x)) {                                                        \
-      llvm::report_fatal_error(llvm::StringRef("Error: " + funcName)); \
-    }                                                                  \
-  }
-
-typedef enum {
-  Quant = 0,
-  DeQuant = 1,
-  Max = 2,
-  Lut = 3,
-} AstlOpName;
+namespace astl {
+namespace masm {
 
 typedef struct {
-  std::string dtype;
-  std::vector<uint32_t> shape;
-} TensorParam;
-
-typedef struct {
-  std::vector<TensorParam> inputs;
-  TensorParam output;
-  std::vector<AstlOpName> fused;
+  Tensors inputs;
+  Tensor output;
+  MasmOpList fused;
 } CommonParam;
 
 typedef struct {
   int kernel;
   int stride;
   int padding;
-  TensorParam output;
-  std::vector<TensorParam> inputs;
-  std::vector<AstlOpName> fused;
+  Tensor output;
+  Tensors inputs;
+  MasmOpList fused;
 } ConvParam;
 
 using AstlOp = mlir::Operation;
@@ -62,3 +47,5 @@ public:
 
 };
 
+}  // namespace masm
+}  // namespace astl

@@ -1,6 +1,9 @@
-#include "Operator.h"
+#include "Assembler/MASM/Operator.h"
 
-class SubOperator : public Operator {  
+namespace astl {
+namespace masm {
+
+class AddOperator : public Operator {
 public:
   bool match(mlir::Operation *op) override {
     return false;
@@ -16,5 +19,8 @@ public:
 };
 
 extern "C" Operator* create() {
-  return new SubOperator(); 
+  return new AddOperator(); 
 }
+
+}  // namespace masm
+}  // namespace astl

@@ -1,6 +1,8 @@
-#include "Operator.h"
+#include "Assembler/MASM/Operator.h"
 
 using namespace mlir;
+namespace astl {
+namespace masm {
 
 bool Operator::matchConv(AstlOp *op, ConvParam &param) {
   return true;
@@ -28,7 +30,7 @@ bool Operator::matchFC(AstlOp *op, CommonParam &param) {
 }
 
 AstlOp* Operator::getDefiningOp(AstlOp *op, uint32_t index) {
-  MLIR_ASSERT(op->getNumOperands() > index,
+  ASSERT_THROW(op->getNumOperands() > index,
               "index overflow: " + std::to_string(index));
   return op->getOperand(index).getDefiningOp();
 }
@@ -37,3 +39,6 @@ std::vector<AstlOp*> Operator::getUserOps(AstlOp *op) {
   auto users = op->getResult(0).getUsers();
   return std::vector<AstlOp*>(users.begin(), users.end());
 }
+
+}  // namespace masm
+}  // namespace astl

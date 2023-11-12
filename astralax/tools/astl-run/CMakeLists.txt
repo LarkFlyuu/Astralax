@@ -7,6 +7,7 @@ set(LLVM_LINK_COMPONENTS
 set(LIBS
   MLIROptLib
   ASTLDialect
+  ASTLBuilder
   ASTLConversion
   ASTLTransforms
   ASTLInitAll
