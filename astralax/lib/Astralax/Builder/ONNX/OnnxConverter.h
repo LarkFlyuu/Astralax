@@ -23,6 +23,7 @@ public:
 
   typedef void (*addNodeFunc)(const onnx::NodeProto& node, OpBuilder& builder,
                               std::unordered_map<std::string, Value>& TensorValue,
+                              std::unordered_map<std::string, onnx::TensorProto> Constants,
                               RankedTensorType& outputType);
  
 private:
@@ -32,6 +33,7 @@ private:
   
   void loadOnnxModel(const std::string& srcOnnxFile, onnx::ModelProto& model);
   void loadConstants(const onnx::GraphProto& graph);
+  void loadConstant(const onnx::NodeProto& node);
   void loadValueInfos(const onnx::GraphProto& graph);
   void loadGraphNodes(const onnx::GraphProto& graph);
   std::vector<Value> loadGraphInput(const onnx::GraphProto& graph);
@@ -41,6 +43,7 @@ private:
   RankedTensorType getTensorType(const onnx::TensorProto& tensor);
 
   std::unordered_map<std::string, onnx::ValueInfoProto> ValueInfoMap;
+  std::unordered_map<std::string, onnx::TensorProto> Constants;
   std::unordered_map<std::string, Value> TensorValue;
   std::unordered_map<std::string, std::pair<OpType, addNodeFunc>> AddNodeFuncs;
   void RegisterAddNodeFunc();

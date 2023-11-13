@@ -332,7 +332,7 @@ def Astl_LoopOp : Astl_BaseOp<"Loop"> {
 }
 def Astl_MatMulOp : Astl_BaseOp<"MatMul"> {
   let summary = "matmul op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$lhs, ATensor:$rhs);
   let results = (outs ATensor:$output);
 }
 def Astl_MaxOp : Astl_BaseOp<"Max"> {
@@ -497,7 +497,7 @@ def Astl_ReluOp : Astl_BaseOp<"Relu"> {
 }
 def Astl_ReshapeOp : Astl_BaseOp<"Reshape"> {
   let summary = "reshape op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$input, I64ArrayAttr:$dims);
   let results = (outs ATensor:$output);
 }
 def Astl_ResizeOp : Astl_BaseOp<"Resize"> {
