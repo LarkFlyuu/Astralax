@@ -24,12 +24,13 @@ public:
   typedef void (*addNodeFunc)(const onnx::NodeProto& node, OpBuilder& builder,
                               std::unordered_map<std::string, Value>& TensorValue,
                               std::unordered_map<std::string, onnx::TensorProto> Constants,
-                              RankedTensorType& outputType);
+                              RankedTensorType& outputType, Value& noneValue);
  
 private:
   ModuleOp moduleOp;
   func::FuncOp mainFunc;
   OpBuilder builder;
+  Value noneValue;
   
   void loadOnnxModel(const std::string& srcOnnxFile, onnx::ModelProto& model);
   void loadConstants(const onnx::GraphProto& graph);

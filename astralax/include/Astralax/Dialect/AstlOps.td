@@ -102,7 +102,7 @@ def Astl_AcoshOp : Astl_BaseOp<"Acosh"> {
 }
 def Astl_AddOp : Astl_BaseOp<"Add"> {
   let summary = "add op";
-  let arguments = (ins ATensor:$lhs, ATensor:$rhs);
+  let arguments = (ins ATensor:$lhs, ATensorOrNone:$rhs, OptionalAttr<F32Attr>:$scalar);
   let results = (outs ATensor:$output);
 }
 def Astl_AndOp : Astl_BaseOp<"And"> {
@@ -197,7 +197,7 @@ def Astl_DepthToSpaceOp : Astl_BaseOp<"DepthToSpace"> {
 }
 def Astl_DivOp : Astl_BaseOp<"Div"> {
   let summary = "div op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$input, ATensorOrNone:$divided, OptionalAttr<F32Attr>:$scalar);
   let results = (outs ATensor:$output);
 }
 def Astl_DropoutOp : Astl_BaseOp<"Dropout"> {
@@ -337,7 +337,7 @@ def Astl_MatMulOp : Astl_BaseOp<"MatMul"> {
 }
 def Astl_MaxOp : Astl_BaseOp<"Max"> {
   let summary = "max op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$input, ATensorOrNone:$comp, OptionalAttr<F32Attr>:$scalar);
   let results = (outs ATensor:$output);
 }
 def Astl_MaxPoolOp : Astl_BaseOp<"MaxPool"> {
@@ -352,17 +352,17 @@ def Astl_MaxRoiPoolOp : Astl_BaseOp<"MaxRoiPool"> {
 }
 def Astl_MeanOp : Astl_BaseOp<"Mean"> {
   let summary = "mean op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$input, ATensorOrNone:$comp, OptionalAttr<F32Attr>:$scalar);
   let results = (outs ATensor:$output);
 }
 def Astl_MinOp : Astl_BaseOp<"Min"> {
   let summary = "min op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$input, ATensorOrNone:$comp, OptionalAttr<F32Attr>:$scalar);
   let results = (outs ATensor:$output);
 }
 def Astl_MulOp : Astl_BaseOp<"Mul"> {
   let summary = "mul op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$lhs, ATensorOrNone:$rhs, OptionalAttr<F32Attr>:$scalar);
   let results = (outs ATensor:$output);
 }
 def Astl_MultinomialOp : Astl_BaseOp<"Multinomial"> {
@@ -592,7 +592,7 @@ def Astl_SliceOp : Astl_BaseOp<"Slice"> {
 }
 def Astl_SoftmaxOp : Astl_BaseOp<"Softmax"> {
   let summary = "softmax op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$input, I64Attr:$axis);
   let results = (outs ATensor:$output);
 }
 def Astl_SoftplusOp : Astl_BaseOp<"Softplus"> {
@@ -672,7 +672,7 @@ def Astl_TopKOp : Astl_BaseOp<"TopK"> {
 }
 def Astl_TransposeOp : Astl_BaseOp<"Transpose"> {
   let summary = "transpose op";
-  let arguments = (ins ATensor:$input);
+  let arguments = (ins ATensor:$input, I64ArrayAttr:$perm);
   let results = (outs ATensor:$output);
 }
 def Astl_TreeEnsembleClassifierOp : Astl_BaseOp<"TreeEnsembleClassifier"> {

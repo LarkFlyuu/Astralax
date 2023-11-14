@@ -6,47 +6,74 @@
 
 namespace astl {
 
+static const std::unordered_map<std::string, OpType> OnnxOpTypeMap = {
+  {"Div", OpType::Div},
+  {"Add", OpType::Add},
+  {"Mul", OpType::Mul},
+  {"Max", OpType::Max},
+  {"Min", OpType::Min},
+  {"Mean", OpType::Mean},
+};
+
 static void addEltwiseNode(const onnx::NodeProto& node, OpBuilder& builder,
                            std::unordered_map<std::string, Value>& TensorValue,
                            std::unordered_map<std::string, onnx::TensorProto> Constants,
-                           RankedTensorType& outputType) {
-//   struct EletwiseParam element_param;
-//   node->op_param = element_param.Copy();
-//   EletwiseParam* param_ptr = dynamic_cast<EletwiseParam*>(node->op_param.get());
-//   if (node->op_type() == OP_ADD) {
-//     param_ptr->elet_type = ELT_SUM;
-//   } else if (node->op_type() == OP_SUB) {
-//     param_ptr->elet_type = ELT_SUB;
-//   } else if (node->op_type() == OP_SQRT) {
-//     param_ptr->elet_type = ELT_SQRT;
-//   } else if (node->op_type() == OP_DIV) {
-//     param_ptr->elet_type = ELT_DIV;
-//   } else if (node->op_type() == OP_MUL) {
-//     param_ptr->elet_type = ELT_MUL;
-//   } else if (node->op_type() == OP_POW) {
-//     param_ptr->elet_type = ELT_POW;
-//   } else if (node->op_type() == OP_MIN) {
-//     param_ptr->elet_type = ELT_MIN;
-//   } else if (node->op_type() == OP_MAX) {
-//     param_ptr->elet_type = ELT_MAX;
-//   }
-//   if (node->input_tensor.size() != onnx_node.input_size()) {
-//     load_eltwise_constant(node, onnx_node, param_ptr, attr_const_tensors);
-//   }
-//   if (param_ptr->elet_type == OP_ADD) {
-//     if (node->input_tensor[0]->tensor_type == TENSOR_TYPE_CONST_DIFF && node->input_tensor[1]->tensor_type == TENSOR_TYPE_MFMP) {
-//       Tensor* temp = node->input_tensor[0];
-//       node->input_tensor[0] = node->input_tensor[1];
-//       node->input_tensor[1] = temp;
-//     }
-//   }
-//   return XPRT_OK;
+                           RankedTensorType& outputType, Value& noneValue) {
+  ASSERT_THROW(node.input_size() == 2, "invalid div operands");
+
+  const std::string& inputName = node.input(0);
+  auto input = TensorValue[inputName];
+
+  std::vector<Value> operands = {input};
+  std::vector<NamedAttribute> attrs;
+  const std::string& eltName = node.input(1);
+  if (TensorValue.find(eltName) != TensorValue.end()) {
+    operands.emplace_back(TensorValue.at(eltName));
+  } else {
+    operands.emplace_back(noneValue);
+    auto tensor = Constants[eltName];
+    auto raw_data = tensor.raw_data();
+    std::vector<float32_t> scalar(raw_data.size() / sizeof(float32_t));
+    std::memcpy(scalar.data(), raw_data.data(), raw_data.size());
+    attrs.push_back({builder.getStringAttr("scalar"), builder.getF32FloatAttr(scalar[0])});
+  }
+
+  const std::string& name = node.name();
+  const std::string& opTypeName = node.op_type();
+  auto opType = OnnxOpTypeMap.at(opTypeName);
+
+  Value result;
+  switch (opType) {
+    case OpType::Div:
+      result = builder.create<astl::DivOp>(getLoc(builder.getContext(), name),
+        outputType, operands, attrs).getResult();
+      break;
+    case OpType::Add:
+      result = builder.create<astl::AddOp>(getLoc(builder.getContext(), name),
+        outputType, operands, attrs).getResult();
+      break;
+    case OpType::Max:
+      result = builder.create<astl::MaxOp>(getLoc(builder.getContext(), name),
+        outputType, operands, attrs).getResult();
+      break;
+    case OpType::Min:
+      result = builder.create<astl::MinOp>(getLoc(builder.getContext(), name),
+        outputType, operands, attrs).getResult();
+      break;
+    case OpType::Mean:
+      result = builder.create<astl::MeanOp>(getLoc(builder.getContext(), name),
+        outputType, operands, attrs).getResult();
+      break;
+    default:
+      llvm::report_fatal_error(llvm::StringRef("invalid op type: " + opTypeName));
+  }
+  TensorValue[node.output(0)] = result;
 }
 
 static void addConvNode(const onnx::NodeProto& node, OpBuilder& builder,
                         std::unordered_map<std::string, Value>& TensorValue,
                         std::unordered_map<std::string, onnx::TensorProto> Constants,
-                        RankedTensorType& outputType) {
+                        RankedTensorType& outputType, Value& noneValue) {
 //   std::vector<int64_t> kernel_size = get_node_attr_ai(onnx_node, "kernel_shape");
 //   if (kernel_size.size() == 1) {
 //     LOGE("node:%s conv 1d is not support now.\n", node->name.c_str());
@@ -85,7 +112,7 @@ static void addConvNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addConvLSTMNode(const onnx::NodeProto& node, OpBuilder& builder,
                             std::unordered_map<std::string, Value>& TensorValue,
                             std::unordered_map<std::string, onnx::TensorProto> Constants,
-                            RankedTensorType& outputType) {
+                            RankedTensorType& outputType, Value& noneValue) {
 //   struct ConvLstmParam convlstm_param;
 //   node->op_param = convlstm_param.Copy();
 //   ConvLstmParam* param_ptr = dynamic_cast<ConvLstmParam*>(node->op_param.get());
@@ -112,7 +139,7 @@ static void addConvLSTMNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addPadNode(const onnx::NodeProto& node, OpBuilder& builder,
                          std::unordered_map<std::string, Value>& TensorValue,
                          std::unordered_map<std::string, onnx::TensorProto> Constants,
-                         RankedTensorType& outputType) {
+                         RankedTensorType& outputType, Value& noneValue) {
 //   struct PadParam pad_param;
 //   node->op_param = pad_param.Copy();
 //   PadParam* param_ptr = dynamic_cast<PadParam*>(node->op_param.get());
@@ -163,7 +190,7 @@ static void addPadNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addReluNode(const onnx::NodeProto& node, OpBuilder& builder,
                         std::unordered_map<std::string, Value>& TensorValue,
                         std::unordered_map<std::string, onnx::TensorProto> Constants,
-                        RankedTensorType& outputType) {
+                        RankedTensorType& outputType, Value& noneValue) {
 //   struct ReluParam relu_param;
 //   node->op_param = relu_param.Copy();
 //   ReluParam* param_ptr = dynamic_cast<ReluParam*>(node->op_param.get());
@@ -174,7 +201,7 @@ static void addReluNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addSliceNode(const onnx::NodeProto& node, OpBuilder& builder,
                          std::unordered_map<std::string, Value>& TensorValue,
                          std::unordered_map<std::string, onnx::TensorProto> Constants,
-                         RankedTensorType& outputType) {
+                         RankedTensorType& outputType, Value& noneValue) {
 //   struct SliceParam slice_param;
 //   node->op_param = slice_param.Copy();
 //   SliceParam* param_ptr = dynamic_cast<SliceParam*>(node->op_param.get());
@@ -216,28 +243,31 @@ static void addSliceNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addTransposeNode(const onnx::NodeProto& node, OpBuilder& builder,
                              std::unordered_map<std::string, Value>& TensorValue,
                              std::unordered_map<std::string, onnx::TensorProto> Constants,
-                             RankedTensorType& outputType) {
-//   struct TransposeParam transpose_param;
-//   node->op_param = transpose_param.Copy();
-//   TransposeParam* param_ptr = dynamic_cast<TransposeParam*>(node->op_param.get());
-//   for (int i = 0; i < onnx_node.attribute_size(); ++i) {
-//     const onnx::AttributeProto& attr = onnx_node.attribute(i);
-//     const auto& attributeName = attr.name();
-//     if (attributeName == "perm") {
-//       int size = attr.ints_size();
-//       param_ptr->dims.resize(size);
-//       for (int v = 0; v < size; v++) {
-//         param_ptr->dims[v] = attr.ints(v);
-//       }
-//     }
-//   }
-//   return XPRT_OK;
+                             RankedTensorType& outputType, Value& noneValue) {
+  ASSERT_THROW(node.input_size() == 1, "invalid transpose operands");
+  
+  const std::string& lhsName = node.input(0);
+
+  auto input = TensorValue[lhsName];
+
+  ASSERT_THROW(node.attribute_size() == 1, "transpose perm not found");
+  const onnx::AttributeProto& attr = node.attribute(0);
+  std::vector<int64_t> perm(attr.ints_size());
+  for (int i = 0; i < attr.ints_size(); i++)
+    perm[i] = attr.ints(i);
+
+  const std::string& name = node.name();
+  auto op = builder.create<astl::TransposeOp>(getLoc(builder.getContext(), name),
+    outputType, input, builder.getI64ArrayAttr(perm));
+  
+  const std::string& outputName = node.output(0);
+  TensorValue[outputName] = op.getResult();
 }
 
 static void addReshapeNode(const onnx::NodeProto& node, OpBuilder& builder,
                            std::unordered_map<std::string, Value>& TensorValue,
                            std::unordered_map<std::string, onnx::TensorProto> Constants,
-                           RankedTensorType& outputType) {
+                           RankedTensorType& outputType, Value& noneValue) {
   ASSERT_THROW(node.input_size() == 2, "invalid reshape operands");
   
   const std::string& inputName = node.input(0);
@@ -263,7 +293,7 @@ static void addReshapeNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addUpsampleNode(const onnx::NodeProto& node, OpBuilder& builder,
                             std::unordered_map<std::string, Value>& TensorValue,
                             std::unordered_map<std::string, onnx::TensorProto> Constants,
-                            RankedTensorType& outputType) {
+                            RankedTensorType& outputType, Value& noneValue) {
 //   struct UpsampleParam upsample_param;
 //   node->op_param = upsample_param.Copy();
 //   UpsampleParam* param_ptr = dynamic_cast<UpsampleParam*>(node->op_param.get());
@@ -323,7 +353,7 @@ static void addUpsampleNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addConcatNode(const onnx::NodeProto& node, OpBuilder& builder,
                           std::unordered_map<std::string, Value>& TensorValue,
                           std::unordered_map<std::string, onnx::TensorProto> Constants,
-                          RankedTensorType& outputType) {
+                          RankedTensorType& outputType, Value& noneValue) {
 //   struct ConcatParam concat_param;
 //   node->op_param = concat_param.Copy();
 //   ConcatParam* param_ptr = dynamic_cast<ConcatParam*>(node->op_param.get());
@@ -338,7 +368,7 @@ static void addConcatNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addSplitNode(const onnx::NodeProto& node, OpBuilder& builder,
                          std::unordered_map<std::string, Value>& TensorValue,
                          std::unordered_map<std::string, onnx::TensorProto> Constants,
-                         RankedTensorType& outputType) {
+                         RankedTensorType& outputType, Value& noneValue) {
 //   struct SplitParam split_param;
 //   node->op_param = split_param.Copy();
 //   SplitParam* param_ptr = dynamic_cast<SplitParam*>(node->op_param.get());
@@ -350,7 +380,7 @@ static void addSplitNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addUnsqueezeNode(const onnx::NodeProto& node, OpBuilder& builder,
                              std::unordered_map<std::string, Value>& TensorValue,
                              std::unordered_map<std::string, onnx::TensorProto> Constants,
-                             RankedTensorType& outputType) {
+                             RankedTensorType& outputType, Value& noneValue) {
 //   struct UnsqueezeParam unsqueeze_param;
 //   node->op_param = unsqueeze_param.Copy();
 //   UnsqueezeParam* param_ptr = dynamic_cast<UnsqueezeParam*>(node->op_param.get());
@@ -368,7 +398,7 @@ static void addUnsqueezeNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addGatherNode(const onnx::NodeProto& node, OpBuilder& builder,
                           std::unordered_map<std::string, Value>& TensorValue,
                           std::unordered_map<std::string, onnx::TensorProto> Constants,
-                          RankedTensorType& outputType) {
+                          RankedTensorType& outputType, Value& noneValue) {
 //   struct GatherParam gather_param;
 //   node->op_param = gather_param.Copy();
 //   GatherParam* param_ptr = dynamic_cast<GatherParam*>(node->op_param.get());
@@ -389,7 +419,7 @@ static void addGatherNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addGlobalAvgPoolNode(const onnx::NodeProto& node, OpBuilder& builder,
                                  std::unordered_map<std::string, Value>& TensorValue,
                                  std::unordered_map<std::string, onnx::TensorProto> Constants,
-                                 RankedTensorType& outputType) {
+                                 RankedTensorType& outputType, Value& noneValue) {
 //   struct AdaptiveAvgPool2DParam global_avgpool_param;
 //   node->op_param = global_avgpool_param.Copy();
 //   AdaptiveAvgPool2DParam* param_ptr = dynamic_cast<AdaptiveAvgPool2DParam*>(node->op_param.get());
@@ -401,7 +431,7 @@ static void addGlobalAvgPoolNode(const onnx::NodeProto& node, OpBuilder& builder
 static void addMaxPoolNode(const onnx::NodeProto& node, OpBuilder& builder,
                            std::unordered_map<std::string, Value>& TensorValue,
                            std::unordered_map<std::string, onnx::TensorProto> Constants,
-                           RankedTensorType& outputType) {
+                           RankedTensorType& outputType, Value& noneValue) {
 //   struct Pool2DParam maxpool_param;
 //   node->op_param = maxpool_param.Copy();
 //   Pool2DParam* param_ptr = dynamic_cast<Pool2DParam*>(node->op_param.get());
@@ -431,7 +461,7 @@ static void addMaxPoolNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addGemmNode(const onnx::NodeProto& node, OpBuilder& builder,
                         std::unordered_map<std::string, Value>& TensorValue,
                         std::unordered_map<std::string, onnx::TensorProto> Constants,
-                        RankedTensorType& outputType) {
+                        RankedTensorType& outputType, Value& noneValue) {
 //   struct LinearParam linear_param;
 //   node->op_param = linear_param.Copy();
 //   LinearParam* param_ptr = dynamic_cast<LinearParam*>(node->op_param.get());
@@ -464,7 +494,7 @@ static void addGemmNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addBatchNormNode(const onnx::NodeProto& node, OpBuilder& builder,
                              std::unordered_map<std::string, Value>& TensorValue,
                              std::unordered_map<std::string, onnx::TensorProto> Constants,
-                             RankedTensorType& outputType) {
+                             RankedTensorType& outputType, Value& noneValue) {
 //   struct BatchNorm2DParam batchnorm_param;
 //   node->op_param = batchnorm_param.Copy();
 //   BatchNorm2DParam* param_ptr = dynamic_cast<BatchNorm2DParam*>(node->op_param.get());
@@ -477,7 +507,7 @@ static void addBatchNormNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addFlattenNode(const onnx::NodeProto& node, OpBuilder& builder,
                            std::unordered_map<std::string, Value>& TensorValue,
                            std::unordered_map<std::string, onnx::TensorProto> Constants,
-                           RankedTensorType& outputType) {
+                           RankedTensorType& outputType, Value& noneValue) {
 //   struct FlattenParam flatten_param;
 //   node->op_param = flatten_param.Copy();
 //   FlattenParam* param_ptr = dynamic_cast<FlattenParam*>(node->op_param.get());
@@ -492,7 +522,7 @@ static void addFlattenNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addReduceNode(const onnx::NodeProto& node, OpBuilder& builder,
                           std::unordered_map<std::string, Value>& TensorValue,
                           std::unordered_map<std::string, onnx::TensorProto> Constants,
-                          RankedTensorType& outputType) {
+                          RankedTensorType& outputType, Value& noneValue) {
 //   struct ReduceOpParam reduce_param;
 //   node->op_param = reduce_param.Copy();
 //   ReduceOpParam* param_ptr = dynamic_cast<ReduceOpParam*>(node->op_param.get());
@@ -512,51 +542,14 @@ static void addReduceNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addConvTransposeNode(const onnx::NodeProto& node, OpBuilder& builder,
                                  std::unordered_map<std::string, Value>& TensorValue,
                                  std::unordered_map<std::string, onnx::TensorProto> Constants,
-                                 RankedTensorType& outputType) {
-//   std::vector<int64_t> kernel_size = get_node_attr_ai(onnx_node, "kernel_shape");
-//   if (kernel_size.size() == 1) {
-//     LOGE("node:%s conv 1d is not support now.\n", node->name.c_str());
-//     return XPRT_ERROR;
-//   }
-//   struct ConvTranspose2DParam conv_param;
-//   node->op_param = conv_param.Copy();
-//   ConvTranspose2DParam* param_ptr = dynamic_cast<ConvTranspose2DParam*>(node->op_param.get());
-//   param_ptr->kernel_size = kernel_size;
-//   param_ptr->dilation = get_node_attr_ai(onnx_node, "dilations");
-//   param_ptr->stride = get_node_attr_ai(onnx_node, "strides");
-//   param_ptr->groups = get_node_attr_i(onnx_node, "group", 1);
-//   std::vector<int64_t> padding = get_node_attr_ai(onnx_node, "pads");
-
-//   if (padding.size() == 4 && padding[0] == padding[2] && padding[1] == padding[3]) {
-//     param_ptr->padding.push_back(padding[0]);  // h
-//     param_ptr->padding.push_back(padding[1]);  // w
-//   }
-//   std::string auto_pad = get_node_attr_s(onnx_node, "auto_pad");
-//   if (auto_pad == "SAME_UPPER" || auto_pad == "SAME_LOWER") {
-//     LOGE("node %s ,pad mode %s not support.\n", node->name.c_str(), auto_pad.c_str());
-//   }
-//   std::vector<int64_t> output_padding = get_node_attr_ai(onnx_node, "output_padding");
-//   if (output_padding.empty()) {
-//     param_ptr->output_padding = {0, 0};
-//   } else {
-//     param_ptr->output_padding.push_back(output_padding[0]);
-//     param_ptr->output_padding.push_back(output_padding[1]);
-//   }
-
-//   param_ptr->bias_term = onnx_node.input_size() == 3 ? 1 : 0;
-//   /* get weight of conv node*/
-//   Tensor* weight = node->input_tensor[1];
-
-//   param_ptr->in_channels = weight->dims[0];
-//   param_ptr->out_channels = weight->dims[1] * param_ptr->groups;
-
-//   return XPRT_OK;
+                                 RankedTensorType& outputType, Value& noneValue) {
+  
 }
 
 static void addMatMulNode(const onnx::NodeProto& node, OpBuilder& builder,
                           std::unordered_map<std::string, Value>& TensorValue,
                           std::unordered_map<std::string, onnx::TensorProto> Constants,
-                          RankedTensorType& outputType) {
+                          RankedTensorType& outputType, Value& noneValue) {
   ASSERT_THROW(node.input_size() == 2, "invalid matmul operands");
   
   const std::string& lhsName = node.input(0);
@@ -578,7 +571,7 @@ static void addMatMulNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addInstNormNode(const onnx::NodeProto& node, OpBuilder& builder,
                             std::unordered_map<std::string, Value>& TensorValue,
                             std::unordered_map<std::string, onnx::TensorProto> Constants,
-                            RankedTensorType& outputType) {
+                            RankedTensorType& outputType, Value& noneValue) {
 //   struct InstanceNormParam instancenorm_param;
 //   node->op_param = instancenorm_param.Copy();
 //   InstanceNormParam* param_ptr = dynamic_cast<InstanceNormParam*>(node->op_param.get());
@@ -593,7 +586,7 @@ static void addInstNormNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addAvgPoolNode(const onnx::NodeProto& node, OpBuilder& builder,
                            std::unordered_map<std::string, Value>& TensorValue,
                            std::unordered_map<std::string, onnx::TensorProto> Constants,
-                           RankedTensorType& outputType) {
+                           RankedTensorType& outputType, Value& noneValue) {
 //   struct Pool2DParam avgpool_param;
 //   node->op_param = avgpool_param.Copy();
 //   Pool2DParam* param_ptr = dynamic_cast<Pool2DParam*>(node->op_param.get());
@@ -616,7 +609,7 @@ static void addAvgPoolNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addActivationLutNode(const onnx::NodeProto& node, OpBuilder& builder,
                                  std::unordered_map<std::string, Value>& TensorValue,
                                  std::unordered_map<std::string, onnx::TensorProto> Constants,
-                                 RankedTensorType& outputType) {
+                                 RankedTensorType& outputType, Value& noneValue) {
 //   struct LutParam layer_param;
 //   node->op_param = layer_param.Copy();
 //   return XPRT_OK;
@@ -625,19 +618,29 @@ static void addActivationLutNode(const onnx::NodeProto& node, OpBuilder& builder
 static void addSoftmaxNode(const onnx::NodeProto& node, OpBuilder& builder,
                            std::unordered_map<std::string, Value>& TensorValue,
                            std::unordered_map<std::string, onnx::TensorProto> Constants,
-                           RankedTensorType& outputType) {
-//   struct SoftmaxParam softmax_param;
-//   node->op_param = softmax_param.Copy();
-//   SoftmaxParam* param_ptr = dynamic_cast<SoftmaxParam*>(node->op_param.get());
-//   param_ptr->axis = get_node_attr_i(onnx_node, "axis");
+                           RankedTensorType& outputType, Value& noneValue) {
+  ASSERT_THROW(node.input_size() == 1, "invalid softmax operands");
+  
+  const std::string& inputName = node.input(0);
+  auto input = TensorValue[inputName];
+  if (input == nullptr) return; // todo: assert it's not null
 
-//   return XPRT_OK;
+  auto attr = node.attribute().begin().operator*();
+  uint64_t axis = attr.i();
+
+  const std::string& name = node.name();
+  auto reshapeOp = builder.create<astl::SoftmaxOp>(
+    getLoc(builder.getContext(), name), outputType, input,
+    builder.getI64IntegerAttr(axis));
+  
+  const std::string& outputName = node.output(0);
+  TensorValue[outputName] = reshapeOp.getResult();
 }
   
 static void addClipNode(const onnx::NodeProto& node, OpBuilder& builder,
                         std::unordered_map<std::string, Value>& TensorValue,
                         std::unordered_map<std::string, onnx::TensorProto> Constants,
-                        RankedTensorType& outputType) {
+                        RankedTensorType& outputType, Value& noneValue) {
 //   struct ClipParam param;
 //   node->op_param = param.Copy();
 //   ClipParam* param_ptr = dynamic_cast<ClipParam*>(node->op_param.get());
@@ -671,7 +674,7 @@ static void addClipNode(const onnx::NodeProto& node, OpBuilder& builder,
 static void addSqueezeNode(const onnx::NodeProto& node, OpBuilder& builder,
                            std::unordered_map<std::string, Value>& TensorValue,
                            std::unordered_map<std::string, onnx::TensorProto> Constants,
-                           RankedTensorType& outputType) {
+                           RankedTensorType& outputType, Value& noneValue) {
 //   struct UnsqueezeParam unsqueeze_param;
 //   node->op_param = unsqueeze_param.Copy();
 //   UnsqueezeParam* param_ptr = dynamic_cast<UnsqueezeParam*>(node->op_param.get());
@@ -737,6 +740,7 @@ void ONNXConverter::onnx2mlir(const std::string& srcOnnxFile) {
 
   auto entryBlock = mainFunc.addEntryBlock();
   builder.setInsertionPointToStart(entryBlock);
+  noneValue = builder.create<astl::NoneOp>(unknownLoc, NoneType::get(builder.getContext()));
   
   onnx::ModelProto model;
   loadOnnxModel(srcOnnxFile, model);
@@ -853,7 +857,7 @@ void ONNXConverter::loadGraphNodes(const onnx::GraphProto& graph) {
 
     auto& funcType = AddNodeFuncs[op_type];
     auto addNodeFunc = funcType.second;
-    addNodeFunc(node, builder, TensorValue, Constants, outputType);
+    addNodeFunc(node, builder, TensorValue, Constants, outputType, noneValue);
   }
 }
 
